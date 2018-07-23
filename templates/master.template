@@ -1,0 +1,215 @@
+{
+   "AWSTemplateFormatVersion": "2010-09-09",
+   "Parameters": {
+        "StackSuffix": {
+            "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
+            "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Type": "String",
+            "Description": "The suffix of the stack.  This will allow multiple copies of the same stack to be created in the same account."
+        },
+        "QSS3BucketName": {
+            "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
+            "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Default": "aws-quickstart",
+            "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Type": "String"
+        },
+        "QSS3KeyPrefix": {
+            "AllowedPattern": "^[0-9a-zA-Z-/]*$",
+            "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Default": "quickstart-sagemaker-pariveda/",
+            "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Type": "String"
+        },
+        "LambdaCodeS3Bucket": {
+            "Type": "String",
+            "Description": "S3 Bucket where lambda code will be copied to (within your account)"
+        },
+        "SageMakerEndpointName": {
+            "Type": "String",
+            "Description": "Name of the SageMaker endpoint that will be executed to generate predictions"
+        },
+        "DataLakeS3BucketName": {
+            "Type": "String",
+            "Description": "S3 Bucket where data lake lives"
+        },
+        "SageMakerInputS3BucketName": {
+            "Type": "String",
+            "Description": "S3 Bucket where SageMaker input data lives"
+        },
+        "SageMakerModelS3BucketName": {
+            "Type": "String",
+            "Description": "S3 Bucket where SageMaker models live"
+        },
+        "ContextLength": {
+            "AllowedPattern": "^[0-9]+$",
+            "ConstraintDescription": "The Context Length must be a number",
+            "Type": "String",
+            "Description": "The length of time SageMaker uses as a sample of data to make predictions"
+        },
+        "PredictionLength": {
+            "AllowedPattern": "^[0-9]+$",
+            "ConstraintDescription": "The Prediction Length must be a number",
+            "Type": "String",
+            "Description": "The length of time SageMaker predicts, in hours"
+        },
+        "TrainingInstanceCount": {
+            "AllowedPattern": "^[0-9]+$",
+            "ConstraintDescription": "The Training Instance Count  must be a number",
+            "Type": "String",
+            "Description": "The number of instances to train the SageMaker model with"
+        },
+        "TrainingInstanceType": {
+            "Type": "String",
+            "Description": "The instance type to train the SageMaker model with"
+        },
+        "TrainingInstanceVolumeSize": {
+            "AllowedPattern": "^[0-9]+$",
+            "ConstraintDescription": "The Training Instance Volume Size must be a number",
+            "Type": "String",
+            "Description": "The EBS volume size (in GB) to attach to each instance training the SageMaker model"
+        },
+        "TrainingMaxRuntimeSeconds": {
+            "AllowedPattern": "^[0-9]+$",
+            "ConstraintDescription": "The Training Max Runtime must be a number",
+            "Type": "String",
+            "Description": "The maximum number of seconds to allow a SageMaker training job to execute"
+        },
+        "InitialEndpointInstanceCount": {
+            "Type": "String",
+            "Description": "The number of instances the SageMaker endpoint autoscaling group begins with"
+        },
+        "EndpointInstanceType": {
+            "Type": "String",
+            "Description": "The instance type to run the SageMaker endpoint on"
+        },
+        "SageMakerInputDataPrefix": {
+            "Type": "String",
+            "Description": "S3 Prefix where SageMaker training/testing data lives"
+        },
+        "SageMakerOutputDataPrefix": {
+            "Type": "String",
+            "Description": "S3 Prefix where SageMaker model lives"
+        }
+    },
+    "Mappings": {
+        "LambdaCode": {
+        "IngestLambdaCodeLocation": { "path": "ingest-lambda/ingest-lambda.zip" },
+        "ModelLambdaCodeLocation": { "path": "model-lambda/model-lambda.zip" },
+        "EnhanceLambdaCodeLocation": { "path": "enhance-lambda/enhance-lambda.zip" },
+        "TransformLambdaCodeLocation": { "path": "transform-lambda/transform-lambda.zip" },
+        "DeliverApiLambdaCodeLocation": { "path": "deliver-api-lambda/deliver-api-lambda.zip" },
+        "PredictApiLambdaCodeLocation": { "path": "predict-api-lambda/predict-api-lambda.zip" },
+        "SageMakerDataPrepLambdaCodeLocation": { "path": "sagemaker-dataprep-lambda/sagemaker-dataprep-lambda.zip" },
+        "SageMakerTrainingKickoffLambdaCodeLocation": { "path": "sagemaker-training-kickoff-lambda/sagemaker-training-kickoff-lambda.zip" },
+        "SageMakerEndpointUpdateLambdaCodeLocation" : { "path": "sagemaker-endpoint-update-lambda/sagemaker-endpoint-update-lambda.zip" }    
+        }
+    },
+    "Conditions": {
+        "QSS3KeyPrefixEmpty": {
+            "Fn::Equals": [
+                {
+                    "Ref": "QSS3KeyPrefix"
+                },
+                ""
+            ]
+        }
+    },
+   "Resources": {
+        "LambdaCopyStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
+                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "lambdacode.template"],
+                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "lambdacode.template"]]}]},
+                "TimeoutInMinutes": "60",
+                "Parameters": {
+                    "StackSuffix" : { "Ref" : "StackSuffix" },
+                    "LambdaCodeS3Bucket" : { "Ref" : "LambdaCodeS3Bucket" },
+                    "QSS3BucketName" : { "Ref" : "QSS3BucketName" },
+                    "QSS3KeyPrefix" : { "Ref" : "QSS3KeyPrefix" },
+                    "IngestLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "IngestLambdaCodeLocation", "path"] },
+                    "ModelLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "ModelLambdaCodeLocation", "path"] },
+                    "EnhanceLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "EnhanceLambdaCodeLocation", "path"] },
+                    "TransformLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "TransformLambdaCodeLocation", "path"] },
+                    "DeliverApiLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "DeliverApiLambdaCodeLocation", "path"] },
+                    "PredictApiLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "PredictApiLambdaCodeLocation", "path"] },
+                    "SageMakerDataPrepLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "SageMakerDataPrepLambdaCodeLocation", "path"] },
+                    "SageMakerTrainingKickoffLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "SageMakerTrainingKickoffLambdaCodeLocation", "path"] },
+                    "SageMakerEndpointUpdateLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "SageMakerEndpointUpdateLambdaCodeLocation", "path"] }
+                }
+            }
+        },
+        "IMETStack": {
+            "DependsOn": ["LambdaCopyStack"],
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
+                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "imet.template"],
+                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "imet.template"]]}]},
+                "TimeoutInMinutes": "60",
+                "Parameters": {
+                    "StackSuffix" : { "Ref" : "StackSuffix" },
+                    "LambdaCodeS3Bucket" : { "Ref" : "LambdaCodeS3Bucket" },
+                    "DataLakeS3BucketName" : { "Ref" : "DataLakeS3BucketName" },
+                    "IngestLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "IngestLambdaCodeLocation", "path"] },
+                    "ModelLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "ModelLambdaCodeLocation", "path"] },
+                    "EnhanceLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "EnhanceLambdaCodeLocation", "path"] },
+                    "TransformLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "TransformLambdaCodeLocation", "path"] }
+                }
+            }
+        },
+        "SageMakerStack": {
+            "DependsOn": ["LambdaCopyStack"],
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
+                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "sagemaker.template"],
+                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "sagemaker.template"]]}]},
+                "TimeoutInMinutes": "60",
+                "Parameters": {
+                    "StackSuffix" : { "Ref" : "StackSuffix"},
+                    "LambdaCodeS3Bucket" : { "Ref" : "LambdaCodeS3Bucket" },
+                    "SageMakerDataPrepLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "SageMakerDataPrepLambdaCodeLocation", "path"] },
+                    "SageMakerTrainingKickoffLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "SageMakerTrainingKickoffLambdaCodeLocation", "path"] },
+                    "SageMakerEndpointUpdateLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "SageMakerEndpointUpdateLambdaCodeLocation", "path"] },
+                    "DataLakeS3BucketName" : { "Ref" : "DataLakeS3BucketName" },
+                    "SageMakerInputS3BucketName" : { "Ref" : "SageMakerInputS3BucketName" },
+                    "SageMakerModelS3BucketName" : { "Ref" : "SageMakerModelS3BucketName" },
+                    "SageMakerAlgorithm" : "DeepARForecasting",
+                    "SageMakerEndpointName" : {"Ref": "SageMakerEndpointName" },
+                    "ContextLength" : { "Ref" : "ContextLength" },
+                    "PredictionLength" : { "Ref" : "PredictionLength" },
+                    "TrainingInstanceCount" : { "Ref" : "TrainingInstanceCount" },
+                    "TrainingInstanceVolumeSize" : { "Ref" : "TrainingInstanceVolumeSize" },
+                    "TrainingInstanceType" : { "Ref" : "TrainingInstanceType" },
+                    "TrainingMaxRuntimeSeconds" : { "Ref" : "TrainingMaxRuntimeSeconds" },
+                    "InitialEndpointInstanceCount" : { "Ref" : "InitialEndpointInstanceCount" },
+                    "EndpointInstanceType" : { "Ref" : "EndpointInstanceType" },
+                    "SageMakerInputDataPrefix" : { "Ref" : "SageMakerInputDataPrefix" },
+                    "SageMakerOutputDataPrefix" : { "Ref" : "SageMakerOutputDataPrefix" },
+                    "DataLakeS3BucketARN" : { "Fn::GetAtt" : [ "IMETStack", "Outputs.DataLakeS3BucketARN" ] }
+                }
+            }
+        },
+        "DeliverStack": {
+            "DependsOn": ["LambdaCopyStack"],
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
+                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "deliver.template"],
+                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "deliver.template"]]}]},
+                "TimeoutInMinutes": "60",
+                "Parameters": {
+                    "StackSuffix" : { "Ref" : "StackSuffix" },
+                    "SageMakerEndpointName" : {"Ref": "SageMakerEndpointName" },
+                    "LambdaCodeS3Bucket" : { "Ref" : "LambdaCodeS3Bucket" },
+                    "DeliverApiLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "DeliverApiLambdaCodeLocation", "path"] },
+                    "PredictApiLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "PredictApiLambdaCodeLocation", "path"] },
+                    "DataLakeS3BucketName" : { "Ref" : "DataLakeS3BucketName" },
+                    "DataLakeS3BucketARN" : { "Fn::GetAtt" : [ "IMETStack", "Outputs.DataLakeS3BucketARN" ] }
+                }
+            }
+        }
+    }   
+}

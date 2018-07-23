@@ -1,0 +1,11 @@
+{
+    "name": "predict-api-lambda",
+    "version": "0.0.1",
+    "description": "A lambda that takes a date range, finds matching files in S3 leading up to that range, and uses those as the input to a SageMaker endpoint to predict future values based on a DeepAR model",
+    "license": "MIT",
+    "dependencies": {
+        "async": "~2.6.0",
+        "aws-helpers": "file:../aws-helpers"
+    },
+    "private": true
+}

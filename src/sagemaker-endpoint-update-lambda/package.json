@@ -1,0 +1,10 @@
+{
+    "name": "sagemaker-endpoint-update-lambda",
+    "version": "0.0.1",
+    "description": "A simple lambda that monitors an S3 prefix for changes and triggers SageMaker endpoint creation/update",
+    "license": "MIT",
+    "dependencies": {
+        "async": "~2.6.0"
+    },
+    "private": true
+}

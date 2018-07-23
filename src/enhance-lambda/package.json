@@ -1,0 +1,13 @@
+{
+    "name": "enhance-lambda",
+    "version": "0.0.1",
+    "description": "A simple lambda that add appends data to price history records",
+    "license": "MIT",
+    "dependencies": {
+        "async": "~2.6.0",
+        "aws-helpers": "file:../aws-helpers",
+        "price-history-record": "file:../price-history-record",
+        "aws-constants": "file:../aws-constants"
+    },
+    "private": true
+}

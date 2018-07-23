@@ -1,0 +1,10 @@
+{
+    "name": "aws-constants",
+    "version": "0.0.1",
+    "private": true,
+    "main": "index.js",
+    "description": "AWS constants",
+    "license": "MIT",
+    "dependencies": {
+    }
+}

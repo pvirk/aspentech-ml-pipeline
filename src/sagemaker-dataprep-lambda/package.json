@@ -1,0 +1,12 @@
+{
+    "name": "sagemaker-dataprep-lambda",
+    "version": "0.0.1",
+    "description": "A simple lambda that reads in files from S3 and packages them into training and evaluation sets for training in Sagemaker",
+    "license": "MIT",
+    "dependencies": {
+        "async": "~2.6.0",
+        "aws-helpers": "file:../aws-helpers",
+        "sagemaker-record": "file:../sagemaker-record"
+    },
+    "private": true
+}
