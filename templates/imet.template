@@ -9,6 +9,10 @@
             "Type": "String",
             "Description": "S3 Bucket where lambda code exists"
         },
+        "LambdaCodeS3KeyPrefix": {
+            "Type": "String",
+            "Description": "S3 Bucket where lambda code exists"
+        },
         "DataLakeS3BucketName": {
             "Type": "String",
             "Description": "S3 Bucket where data lake lives"
@@ -30,10 +34,27 @@
             "Description": "S3 Path where Transform Lambda code exists"
         }
     },
+    "Conditions": {
+        "CreateDataLakeS3Bucket": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        {
+                            "Fn::Join": ["-", [{"Ref": "DataLakeS3BucketName"}, {"Ref" : "StackSuffix"}]]
+                        },
+                        {
+                            "Ref": "LambdaCodeS3Bucket"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
     "Resources": {
         "DataLakeS3Bucket": {
             "Type": "AWS::S3::Bucket",
             "DeletionPolicy" : "Retain",
+            "Condition": "CreateDataLakeS3Bucket",
             "Properties": {
                 "BucketName": {
                     "Fn::Join": ["-", [{"Ref": "DataLakeS3BucketName"}, {"Ref" : "StackSuffix"}]]
@@ -447,7 +468,9 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref": "LambdaCodeS3Bucket"},
-                    "S3Key": {"Ref": "IngestLambdaCodeLocation"}
+                    "S3Key": {
+                        "Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "IngestLambdaCodeLocation"}]]
+                    }
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 90,
@@ -472,7 +495,7 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref": "LambdaCodeS3Bucket"},
-                    "S3Key": {"Ref": "ModelLambdaCodeLocation"}
+                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "ModelLambdaCodeLocation"}]]}
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 90,
@@ -500,7 +523,7 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref": "LambdaCodeS3Bucket"},
-                    "S3Key": {"Ref": "EnhanceLambdaCodeLocation"}
+                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "EnhanceLambdaCodeLocation"}]]}
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 30,
@@ -528,7 +551,7 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref": "LambdaCodeS3Bucket"},
-                    "S3Key": {"Ref": "TransformLambdaCodeLocation"}
+                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "TransformLambdaCodeLocation"}]]}
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 30,

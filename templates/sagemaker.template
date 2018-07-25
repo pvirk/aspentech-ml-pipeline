@@ -9,6 +9,10 @@
             "Type": "String",
             "Description": "S3 Bucket where lambda code exists"
         },
+        "LambdaCodeS3KeyPrefix": {
+            "Type": "String",
+            "Description": "S3 Bucket where lambda code exists"
+        },
         "SageMakerDataPrepLambdaCodeLocation": {
             "Type": "String",
             "Description": "S3 Path where SageMaker Data Prep Lambda code exists"
@@ -183,7 +187,7 @@
                 "BlazingText": "306986355934.dkr.ecr.ap-northeast-2.amazonaws.com",
                 "ObjectDetection": "306986355934.dkr.ecr.ap-northeast-2.amazonaws.com"
             },
-            "ap-southest-2": {
+            "ap-southeast-2": {
                 "DeepARForecasting": "514117268639.dkr.ecr.ap-southeast-2.amazonaws.com",
                 "KMeans": "712309505854.dkr.ecr.ap-southeast-2.amazonaws.com",
                 "PCA": "712309505854.dkr.ecr.ap-southeast-2.amazonaws.com",
@@ -230,11 +234,52 @@
             }
         }
     },
+    "Conditions": {
+        "CreateSageMakerInputS3Bucket": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        {
+                            "Ref": "DataLakeS3BucketName"
+                        },
+                        {
+                            "Ref": "SageMakerInputS3BucketName"
+                        }
+                    ]
+                }
+            ]
+        },
+        "CreateSageMakerModelS3Bucket": {
+            "Fn::Not": [
+                {
+                    "Fn::Or": [{
+                        "Fn::Equals": [
+                            {
+                                "Ref": "SageMakerModelS3BucketName"
+                            },
+                            {
+                                "Ref": "SageMakerInputS3BucketName"
+                            }
+                        ]},
+                        {"Fn::Equals": [
+                            {
+                                "Ref": "DataLakeS3BucketName"
+                            },
+                            {
+                                "Ref": "SageMakerModelS3BucketName"
+                            }
+                        ]}
+                    ]
+                }
+            ]
+        }
+    },
     "Resources": {
         "SageMakerInputS3Bucket": {
             "DependsOn": ["S3BucketInvokeTrainingKickoffLambdaPerm"],
             "Type": "AWS::S3::Bucket",
             "DeletionPolicy": "Retain",
+            "Condition": "CreateSageMakerInputS3Bucket",
             "Properties": {
                 "BucketName": {
                     "Fn::Join": ["-", [{
@@ -273,6 +318,8 @@
         "SageMakerModelS3Bucket": {
             "Type": "AWS::S3::Bucket",
             "DeletionPolicy": "Retain",
+            "DependsOn": ["S3BucketInvokeEndpointUpdateLambdaPerm"],
+            "Condition": "CreateSageMakerModelS3Bucket",
             "Properties": {
                 "BucketName": {
                     "Fn::Join": ["-", [{
@@ -963,7 +1010,7 @@
                         "Ref": "LambdaCodeS3Bucket"
                     },
                     "S3Key": {
-                        "Ref": "SageMakerDataPrepLambdaCodeLocation"
+                        "Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "SageMakerDataPrepLambdaCodeLocation"}]]
                     }
                 },
                 "Runtime": "nodejs4.3",
@@ -1015,9 +1062,8 @@
                     "S3Bucket": {
                         "Ref": "LambdaCodeS3Bucket"
                     },
-                    "S3Key": {
-                        "Ref": "SageMakerTrainingKickoffLambdaCodeLocation"
-                    }
+                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "SageMakerTrainingKickoffLambdaCodeLocation"}]]}
+                    
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 300,
@@ -1081,7 +1127,7 @@
                         "Ref": "LambdaCodeS3Bucket"
                     },
                     "S3Key": {
-                        "Ref": "SageMakerEndpointUpdateLambdaCodeLocation"
+                        "Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "SageMakerEndpointUpdateLambdaCodeLocation"}]]
                     }
                 },
                 "Runtime": "nodejs4.3",

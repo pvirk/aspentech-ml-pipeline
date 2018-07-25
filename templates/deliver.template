@@ -9,6 +9,10 @@
             "Type": "String",
             "Description": "S3 Bucket where lambda code exists"
         },
+        "LambdaCodeS3KeyPrefix": {
+            "Type": "String",
+            "Description": "S3 Bucket where lambda code exists"
+        },
         "DeliverApiLambdaCodeLocation": {
             "Type": "String",
             "Description": "S3 Path where Deliver API Lambda code exists"
@@ -208,7 +212,7 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref" : "LambdaCodeS3Bucket"},
-                    "S3Key": {"Ref" : "DeliverApiLambdaCodeLocation"}
+                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref" : "DeliverApiLambdaCodeLocation"}]]}
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 30,
@@ -234,7 +238,7 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref" : "LambdaCodeS3Bucket"},
-                    "S3Key": {"Ref" : "PredictApiLambdaCodeLocation"}
+                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref" : "PredictApiLambdaCodeLocation"}]]}
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 30,

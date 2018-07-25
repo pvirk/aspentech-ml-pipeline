@@ -19,4 +19,3 @@ cd "../.."
 
 mkdir -p $package_folder/$lambda/
 mv "$source/$filename" $destination
-#aws s3 cp $destination "$bucketName/$s3Key"

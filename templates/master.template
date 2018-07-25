@@ -150,7 +150,8 @@
                 "TimeoutInMinutes": "60",
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix" },
-                    "LambdaCodeS3Bucket" : { "Ref" : "LambdaCodeS3Bucket" },
+                    "LambdaCodeS3Bucket" : { "Fn::GetAtt" : [ "LambdaCopyStack", "Outputs.OutputBucketName" ] },
+                    "LambdaCodeS3KeyPrefix" :{ "Ref" : "QSS3KeyPrefix" },
                     "DataLakeS3BucketName" : { "Ref" : "DataLakeS3BucketName" },
                     "IngestLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "IngestLambdaCodeLocation", "path"] },
                     "ModelLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "ModelLambdaCodeLocation", "path"] },
@@ -169,7 +170,8 @@
                 "TimeoutInMinutes": "60",
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix"},
-                    "LambdaCodeS3Bucket" : { "Ref" : "LambdaCodeS3Bucket" },
+                    "LambdaCodeS3Bucket" : { "Fn::GetAtt" : [ "LambdaCopyStack", "Outputs.OutputBucketName" ] },
+                    "LambdaCodeS3KeyPrefix" :{ "Ref" : "QSS3KeyPrefix" },
                     "SageMakerDataPrepLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "SageMakerDataPrepLambdaCodeLocation", "path"] },
                     "SageMakerTrainingKickoffLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "SageMakerTrainingKickoffLambdaCodeLocation", "path"] },
                     "SageMakerEndpointUpdateLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "SageMakerEndpointUpdateLambdaCodeLocation", "path"] },
@@ -203,7 +205,8 @@
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix" },
                     "SageMakerEndpointName" : {"Ref": "SageMakerEndpointName" },
-                    "LambdaCodeS3Bucket" : { "Ref" : "LambdaCodeS3Bucket" },
+                    "LambdaCodeS3Bucket" : { "Fn::GetAtt" : [ "LambdaCopyStack", "Outputs.OutputBucketName" ] },
+                    "LambdaCodeS3KeyPrefix" :{ "Ref" : "QSS3KeyPrefix" },
                     "DeliverApiLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "DeliverApiLambdaCodeLocation", "path"] },
                     "PredictApiLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "PredictApiLambdaCodeLocation", "path"] },
                     "DataLakeS3BucketName" : { "Ref" : "DataLakeS3BucketName" },
