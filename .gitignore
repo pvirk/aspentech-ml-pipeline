@@ -171,3 +171,7 @@ typings/
 
 # next.js build output
 .next
+
+#npm
+package-lock.json
+packate_lock.json
