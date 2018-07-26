@@ -24,32 +24,9 @@
                 },
                 {
                     "Label": {
-                        "default": "Lambda Code for Data Pipeline"
-                    },
-                    "Parameters": [
-                        "IngestLambdaCodeLocation",
-                        "ModelLambdaCodeLocation",
-                        "EnhanceLambdaCodeLocation",
-                        "TransformLambdaCodeLocation"
-                    ]
-                },
-                {
-                    "Label": {
-                        "default": "Lambda Code for SageMaker Automation"
-                    },
-                    "Parameters": [
-                        "SageMakerDataPrepLambdaCodeLocation",
-                        "SageMakerTrainingKickoffLambdaCodeLocation",
-                        "SageMakerEndpointUpdateLambdaCodeLocation"
-                    ]
-                },
-                {
-                    "Label": {
                         "default": "Delivery APIs"
                     },
                     "Parameters": [
-                        "DeliverApiLambdaCodeLocation",
-                        "PredictApiLambdaCodeLocation",
                         "InitialEndpointInstanceCount",
                         "EndpointInstanceType"
                     ]
