@@ -68,7 +68,7 @@ function createUpdateEndpoint(awsRegion, record, callback){
 function getModelCreationParams(s3Url, dateString){
 	var modelName = getModelName(dateString);
 	var modelExecutionRoleArn = process.env.ModelRoleArn;
-	var modelImage = process.env.DeepARImage;
+	var modelImage = process.env.TrainingImage;
 	var params = {
   		ExecutionRoleArn: modelExecutionRoleArn,
   		ModelName: modelName,
