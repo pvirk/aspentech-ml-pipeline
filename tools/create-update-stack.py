@@ -38,6 +38,7 @@ def main(stack_name, template, parameters, stack_suffix):
         if stack_status == "ROLLBACK_COMPLETE":
             print('Deleting {}'.format(full_stack_name))
             cf.delete_stack(StackName=full_stack_name)
+            stack_status = "NEW"
             time.sleep(5)
         if stack_status == "NEW":
             print('Creating {}'.format(full_stack_name))

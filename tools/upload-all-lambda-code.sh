@@ -1,12 +1,12 @@
-./tools/package-lambda-code.sh ingest-lambda
-./tools/package-lambda-code.sh model-lambda
-./tools/package-lambda-code.sh enhance-lambda
-./tools/package-lambda-code.sh transform-lambda
-./tools/package-lambda-code.sh sagemaker-dataprep-lambda
-./tools/package-lambda-code.sh sagemaker-training-kickoff-lambda
-./tools/package-lambda-code.sh sagemaker-endpoint-update-lambda
-./tools/package-lambda-code.sh deliver-api-lambda
-./tools/package-lambda-code.sh predict-api-lambda
+./tools/upload-lambda-code.sh ingest-lambda
+./tools/upload-lambda-code.sh model-lambda
+./tools/upload-lambda-code.sh enhance-lambda
+./tools/upload-lambda-code.sh transform-lambda
+./tools/upload-lambda-code.sh sagemaker-dataprep-lambda
+./tools/upload-lambda-code.sh sagemaker-training-kickoff-lambda
+./tools/upload-lambda-code.sh sagemaker-endpoint-update-lambda
+./tools/upload-lambda-code.sh deliver-api-lambda
+./tools/upload-lambda-code.sh predict-api-lambda
 
 rm -rf src/ingest-lambda/node_modules
 rm -rf  src/model-lambda/node_modules

@@ -14,14 +14,14 @@ if [ $# -eq 0 ]
    		stack_suffix="$1"
 fi
 
-export bucket_name = "s3://datalake-sagemaker-demo-lambda-code"
-export transform_bucket = "s3://imet-sagemaker-demo-data-lake-$stack_suffix"
+export bucket_name="s3://datalake-sagemaker-demo-lambda-code"
+export transform_bucket="s3://imet-sagemaker-demo-data-lake-$stack_suffix"
 
 
-aws s3 cp "templates/lambdacode.template" "$bucket_name/lambdacode.template"
-aws s3 cp "templates/deliver.template" "$bucket_name/deliver.template"
-aws s3 cp "templates/imet.template" "$bucket_name/imet.template"
-aws s3 cp "templates/sagemaker.template" "$bucket_name/sagemaker.template"
+aws s3 cp "templates/lambdacode.template" "$bucket_name/lambda/lambdacode.template"
+aws s3 cp "templates/deliver.template" "$bucket_name/lambda/deliver.template"
+aws s3 cp "templates/imet.template" "$bucket_name/lambda/imet.template"
+aws s3 cp "templates/sagemaker.template" "$bucket_name/lambda/sagemaker.template"
 
 python tools/create-update-stack.py "datalake-sagemaker-demo" "templates/master.template" "ci/datalake-sagemaker.json" $stack_suffix
 

@@ -10,7 +10,7 @@ destination="$package_folder/$lambda/$filename"
 
 cd $source
 
-s3Key="$lambda/$filename"
+s3Key="lambda/$lambda/$filename"
 
 npm install
 zip -r $lambda .
@@ -19,4 +19,4 @@ cd "../.."
 
 mkdir -p $package_folder/$lambda/
 mv "$source/$filename" $destination
-#aws s3 cp $destination "$bucketName/$s3Key"
+aws s3 cp $destination "$bucketName/$s3Key"
