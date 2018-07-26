@@ -54,8 +54,8 @@ function translateData(inputS3Objects){
 	var trainingRows = [];
 	var testRows = [];
 	var hyperParameters = JSON.parse(process.env.HyperParameters);
-	var contextLength = hyperParameters.context_length;
-	var predictionLength = hyperParameters.prediction_length;
+	var contextLength = parseInt(hyperParameters.context_length);
+	var predictionLength = parseInt(hyperParameters.prediction_length);
 	for(var s3Object of inputS3Objects){
 		cleanAndSplitRow(s3Object, contextLength, predictionLength, trainingRows, testRows);
 	}

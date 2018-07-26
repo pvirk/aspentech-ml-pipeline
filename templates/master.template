@@ -144,7 +144,8 @@
         "SageMakerHyperParameters": {
             "Type": "String",
             "Description": "The hyperparameters that will be passed to the SageMaker training algorithm, in JSON format.  See the HyperParameters section under the algorithm you are using from https://docs.aws.amazon.com/SageMaker/latest/dg/algos.html",
-            "Default": "{\"time_freq\":\"H\",\"context_length\":72,\"prediction_length\":24}"
+            "Default": "{\"time_freq\":\"H\",\"context_length\":\"72\",\"prediction_length\":\"24\",\"epochs\":\"20\"}"
+
         },
         "SageMakerInputS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",

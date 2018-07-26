@@ -33,7 +33,7 @@
     },
     {
         "ParameterKey": "SageMakerHyperParameters",
-        "ParameterValue": "{\"time_freq\":\"H\",\"context_length\":72,\"prediction_length\":24}"
+        "ParameterValue": "{\"time_freq\":\"H\",\"context_length\":\"72\",\"prediction_length\":\"24\",\"epochs\":\"20\"}"
     },
     {
         "ParameterKey": "TrainingInstanceCount",
