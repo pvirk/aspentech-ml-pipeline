@@ -3,7 +3,7 @@ var async = require('async');
 var awsHelpers = require('aws-helpers');
 var crypto = require('crypto');
 var PriceHistoryBatch = require('price-history-batch');
-var awsConstants = require('aws-constants');
+var instanceTypes = ['d2.2xlarge', 'm3.large', 'c3.xlarge', 'c3.2xlarge', 'c5.9xlarge', 'i3.2xlarge', 'r3.4xlarge', 'r4.16xlarge', 't2.large', 'm3.2xlarge', 'r4.large', 'c5.18xlarge', 'r3.2xlarge', 'r4.4xlarge', 'c3.large', 'c4.8xlarge', 't2.2xlarge', 'm4.16xlarge', 'r4.8xlarge', 'p2.xlarge', 'i3.xlarge', 'c3.8xlarge', 'c4.xlarge', 't2.micro', 'c3.4xlarge', 'm4.large', 'c5.4xlarge', 't2.medium', 'c5.large', 'i2.8xlarge', 'd2.4xlarge', 't2.xlarge', 'd2.8xlarge', 'c4.4xlarge', 'r4.2xlarge', 'i3.16xlarge', 'x1.32xlarge', 'c5.2xlarge', 'm4.xlarge', 'd2.xlarge', 'c4.2xlarge', 'c5.xlarge', 't2.small', 'p2.16xlarge', 'r4.xlarge', 'm4.10xlarge', 'r3.large', 'i2.xlarge', 'm3.medium', 'i2.4xlarge', 'r3.xlarge', 'c4.large', 'p2.8xlarge', 'm4.2xlarge', 'i2.2xlarge', 'x1.16xlarge', 'i3.large', 'r3.8xlarge', 'i3.4xlarge', 'm4.4xlarge', 'i3.8xlarge', 'm3.xlarge'];
 
 exports.handler = (event, context, callback) => {
 	console.log('Ingest handler received event:', event);
@@ -27,11 +27,13 @@ exports.handler = (event, context, callback) => {
 	}else{
 		console.log('Triggered by CloudWatch');
 		var endTime = new Date()
-		endTime.setHours(endTime.getHours() - 1);
+		endTime.setDate(endTime.getDate() - 1);
+		endTime.setHours(23);
 		endTime.setMinutes(59);
 		endTime.setSeconds(59);
 		endTime.setMilliseconds(999)
 		var startTime = new Date(endTime);
+		startTime.setHours(0);
 		startTime.setMinutes(0);
 		startTime.setSeconds(0);
 		startTime.setMilliseconds(0);
@@ -57,14 +59,23 @@ function split(array, size){
 }
 
 function queryPriceHistory(startTime, endTime, callback){
-	var instanceTypes = awsConstants.EC2_INSTANCE_TYPES;
+	console.log(instanceTypes);
 	var instanceTypeBatches = split(instanceTypes, 4);
 	var ec2 = new AWS.EC2({region: awsRegion});
 	var awsRegion = process.env.AWS_REGION;
 	var outputStream = process.env.OutputStream;
 	console.log('Querying for price history between %s and %s in %d batches', startTime.toISOString(), endTime.toISOString(), instanceTypeBatches.length);
-	async.each(instanceTypeBatches, function(instanceTypeBatch, callback){
-        var params = {
+	async.each(instanceTypeBatches, getSpotPrices ,function(err) {
+        if(err) {
+			callback(err);
+        }
+        else {
+            callback(null);
+        }
+    });
+    
+    function getSpotPrices(instanceTypeBatch, callback, nextToken) {
+	    var params = {
 			EndTime: endTime, 
 			InstanceTypes: instanceTypeBatch, 
 			ProductDescriptions: [
@@ -72,6 +83,9 @@ function queryPriceHistory(startTime, endTime, callback){
 			], 
 			StartTime: startTime
 		};
+		if(nextToken) {
+			params.NextToken = nextToken;
+		}
 		ec2.describeSpotPriceHistory(params, function(err, data) {
 			if (err){
 				console.log(err, err.stack);
@@ -81,14 +95,12 @@ function queryPriceHistory(startTime, endTime, callback){
 				var batchRecord = new PriceHistoryBatch(startTime.toISOString(), endTime.toISOString(), data.SpotPriceHistory);
 				var partitionKey = crypto.createHash('md5').update(new Date().toISOString()).digest('hex');
 				awsHelpers.sendDataToKinesis(awsRegion, outputStream, partitionKey, JSON.stringify(batchRecord), callback);
+				if(data.NextToken) {
+					console.log("Getting the next batch of results for instance type batch ", instanceTypeBatch)
+					getSpotPrices(instanceTypeBatch, callback, data.NextToken);
+				}
 			}
 		});
-    },function(err){
-        if(err) {
-			callback(err);
-        }
-        else {
-            callback(null);
-        }
-    });
+	}
 }
+
