@@ -70,59 +70,59 @@
                         "TrainingMaxRuntimeSeconds"
                     ]
                 }
-            ]
-        },
-        "ParameterLabels": {
-            "StackSuffix": {
-                "default": "Resource Suffix"
-            },             
-            "LambdaCodeS3Bucket": {
-                "default": "Lambda Code S3 Bucket"
-            },
-            "DataLakeS3BucketName": {
-                "default": "Lambda Code S3 Bucket"
-            },
-            "SageMakerInputS3BucketName": {
-                "default": "SageMaker Feature Staging Bucket"
-            },
-            "SageMakerModelS3BucketName": {
-                "default": "SageMaker Model Repository Bucket"
-            },
-            "SageMakerEndpointName": {
-                "default": "SageMaker Endpoint Name"
-            },
-            "SageMakerHyperParameters": {
-                "default": "SageMaker Hyper Parameters"
-            },
-            "SageMakerInputDataPrefix": {
-                "default": "SageMaker Training Data Bucket"
-            },
-            "SageMakerOutputDataPrefix": {
-                "default": "SageMaker Model S3 Key Prefix"
-            },
-            "TrainingInstanceCount": {
-                "default": "SageMaker Training Instance Count"
-            },
-            "TrainingInstanceType": {
-                "default": "SageMaker Training Instance Type"
-            },
-            "TrainingInstanceVolumeSize": {
-                "default": "SageMaker Training Instance Volume Size (GB)"
-            },
-            "TrainingMaxRuntimeSeconds": {
-                "default": "SageMaker Training Timeout (seconds)"
-            },
-            "InitialEndpointInstanceCount": {
-                "default": "SageMaker Endpoint Instance Count"
-            },
-            "EndpointInstanceType": {
-                "default": "SageMaker Endpoint Instance Type"
-            },
-            "QSS3BucketName": {
-                "default": "Quick Start S3 Bucket Name"
-            },
-            "QSS3KeyPrefix": {
-                "default": "Quick Start S3 Key Prefix"
+            ],
+            "ParameterLabels": {
+                "StackSuffix": {
+                    "default": "Resource Suffix"
+                },             
+                "LambdaCodeS3Bucket": {
+                    "default": "Lambda Code S3 Bucket"
+                },
+                "DataLakeS3BucketName": {
+                    "default": "Lambda Code S3 Bucket"
+                },
+                "SageMakerInputS3BucketName": {
+                    "default": "SageMaker Feature Staging Bucket"
+                },
+                "SageMakerModelS3BucketName": {
+                    "default": "SageMaker Model Repository Bucket"
+                },
+                "SageMakerEndpointName": {
+                    "default": "SageMaker Endpoint Name"
+                },
+                "SageMakerHyperParameters": {
+                    "default": "SageMaker Hyper Parameters"
+                },
+                "SageMakerInputDataPrefix": {
+                    "default": "SageMaker Training Data Bucket"
+                },
+                "SageMakerOutputDataPrefix": {
+                    "default": "SageMaker Model S3 Key Prefix"
+                },
+                "TrainingInstanceCount": {
+                    "default": "SageMaker Training Instance Count"
+                },
+                "TrainingInstanceType": {
+                    "default": "SageMaker Training Instance Type"
+                },
+                "TrainingInstanceVolumeSize": {
+                    "default": "SageMaker Training Instance Volume Size (GB)"
+                },
+                "TrainingMaxRuntimeSeconds": {
+                    "default": "SageMaker Training Timeout (seconds)"
+                },
+                "InitialEndpointInstanceCount": {
+                    "default": "SageMaker Endpoint Instance Count"
+                },
+                "EndpointInstanceType": {
+                    "default": "SageMaker Endpoint Instance Type"
+                },
+                "QSS3BucketName": {
+                    "default": "Quick Start S3 Bucket Name"
+                },
+                "QSS3KeyPrefix": {
+                    "default": "Quick Start S3 Key Prefix"
+                }
             }
         }
     },
