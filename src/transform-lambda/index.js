@@ -86,7 +86,7 @@ function updateTarget(sageMakerRecord, priceHistoryRecord)
         // If new entry belongs at or past end of list, add any necessary empty entries and append the new entry
         if(hoursBetween - sageMakerRecord.target.length >= 0){
             // If there is a gap between the end of the current list and the new value, fill with nulls
-            var emptyPrices = Array(hoursBetweenSageMakerRecord.target.length).fill(null);
+            var emptyPrices = Array(hoursBetween - SageMakerRecord.target.length).fill(null);
             console.log('Padding end of list with %d empty prices and adding to end of list', emptyPrices.length);
             sageMakerRecord.target = sageMakerRecord.target.concat(emptyPrices);
             sageMakerRecord.target.push(priceHistoryRecord.spotPrice)
