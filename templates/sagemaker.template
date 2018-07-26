@@ -518,7 +518,7 @@
                                         "Ref": "AWS::Region"
                                     }, ":", {
                                         "Ref": "AWS::AccountId"
-                                    }, ":", "training-job/ec2-spot-data-training-*"]]
+                                    }, ":", "training-job/*training-*"]]
                                 }
                             },
                             {
@@ -587,7 +587,7 @@
                                         "Ref": "AWS::Region"
                                     }, ":", {
                                         "Ref": "AWS::AccountId"
-                                    }, ":", "model/ec2-spot-data-model-*"]]
+                                    }, ":", "model/*model-*"]]
                                 }
                             },
                             {
@@ -600,7 +600,7 @@
                                         "Ref": "AWS::Region"
                                     }, ":", {
                                         "Ref": "AWS::AccountId"
-                                    }, ":", "endpoint-config/ec2-spot-data-endpoint-config-*"]]
+                                    }, ":", "endpoint-config/*endpoint-config-*"]]
                                 }
                             },
                             {
@@ -613,7 +613,7 @@
                                         "Ref": "AWS::Region"
                                     }, ":", {
                                         "Ref": "AWS::AccountId"
-                                    }, ":", "endpoint/ec2-spot-data-endpoint-*"]]
+                                    }, ":", "endpoint/*endpoint-*"]]
                                 }
                             },
                             {
@@ -628,14 +628,14 @@
                                             "Ref": "AWS::Region"
                                         }, ":", {
                                             "Ref": "AWS::AccountId"
-                                        }, ":", "endpoint/ec2-spot-data-endpoint-*"]]
+                                        }, ":", "endpoint/*endpoint-*"]]
                                     },
                                     {
                                         "Fn::Join": ["", ["arn:aws:sagemaker:", {
                                             "Ref": "AWS::Region"
                                         }, ":", {
                                             "Ref": "AWS::AccountId"
-                                        }, ":", "endpoint-config/ec2-spot-data-endpoint-config-*"]]
+                                        }, ":", "endpoint-config/*config-*"]]
                                     }
                                 ]
                             },
