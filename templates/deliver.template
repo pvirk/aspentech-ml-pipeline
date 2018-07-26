@@ -218,9 +218,7 @@
                 "Timeout": 30,
                 "Environment": {
                     "Variables": {
-                        "OutputBucketName": {
-                            "Fn::Join": ["-", [{"Ref" : "LambdaCodeS3Bucket"}, {"Ref" : "StackSuffix"}]]
-                        },
+                        "OutputBucketName": {"Ref" : "DataLakeS3BucketName"},
                         "ObjectPrefix": "transform"
                     }
                 }
@@ -244,9 +242,7 @@
                 "Timeout": 30,
                 "Environment": {
                     "Variables": {
-                        "OutputBucketName": {
-                            "Fn::Join": ["-", [{"Ref" : "DataLakeS3BucketName"}, {"Ref" : "StackSuffix"}]]
-                        },
+                        "OutputBucketName": {"Ref" : "DataLakeS3BucketName"},
                         "ObjectPrefix": "transform",
                         "SageMakerEndpointName": {
                             "Fn::Join": ["-", [{"Ref": "SageMakerEndpointName"}, {"Ref": "StackSuffix"}]]
