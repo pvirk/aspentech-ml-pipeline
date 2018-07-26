@@ -195,35 +195,41 @@
             "AllowedPattern": "^[0-9]+$",
             "ConstraintDescription": "The Training Instance Count  must be a number",
             "Type": "String",
-            "Description": "The number of instances to train the SageMaker model with.  Ensure that the algorithm you have chosen supports parallel training before setting to a number higher than 1."
+            "Description": "The number of instances to train the SageMaker model with.  Ensure that the algorithm you have chosen supports parallel training before setting to a number higher than 1.",
+            "Default": "1"
         },
         "TrainingInstanceType": {
             "Type": "String",
             "AllowedValues": ["ml.t2.medium","ml.t2.large","ml.t2.xlarge","ml.t2.2xlarge","ml.m5.large","ml.m5.xlarge","ml.m5.2xlarge","ml.m5.4xlarge","ml.m5.12xlarge","ml.m5.24xlarge","ml.m4.xlarge","ml.m4.4xlarge","ml.m4.10xlarge","ml.m4.16xlarge","ml.c5.large","ml.c5.xlarge","ml.c5.2xlarge","ml.c5.4xlarge","ml.c5.9xlarge","ml.c5.18xlarge","ml.c4.large","ml.c4.xlarge","ml.c4.2xlarge","ml.c4.4xlarge","ml.c4.8xlarge","ml.p3.2xlarge","ml.p3.8xlarge","ml.p3.16xlarge","ml.p2.xlarge","ml.p2.8xlarge","ml.p2.16xlarge"],
-            "Description": "The instance type to train the SageMaker model with.  Check the documentation for your chosen algorithm for instance type recommendations."
+            "Description": "The instance type to train the SageMaker model with.  Check the documentation for your chosen algorithm for instance type recommendations.",
+            "Default": "ml.t2.medium"
         },
         "TrainingInstanceVolumeSize": {
             "AllowedPattern": "^[0-9]+$",
             "ConstraintDescription": "The Training Instance Volume Size must be a number",
             "Type": "String",
-            "Description": "The EBS volume size (in GB) to attach to each instance training the SageMaker model"
+            "Description": "The EBS volume size (in GB) to attach to each instance training the SageMaker model",
+            "Default": "20"
         },
         "TrainingMaxRuntimeSeconds": {
             "AllowedPattern": "^[0-9]+$",
             "ConstraintDescription": "The Training Max Runtime must be a number",
             "Type": "String",
-            "Description": "The maximum number of seconds to allow a SageMaker training job to execute"
+            "Description": "The maximum number of seconds to allow a SageMaker training job to execute",
+            "Default": "3600"
         },
         "InitialEndpointInstanceCount": {
             "AllowedPattern": "^[0-9]+$",
             "ConstraintDescription": "The Endpoint Instance Count  must be a number",
             "Type": "String",
-            "Description": "The number of instances the SageMaker endpoint autoscaling group begins with."
+            "Description": "The number of instances the SageMaker endpoint autoscaling group begins with.",
+            "Default": "1"
         },
         "EndpointInstanceType": {
             "Type": "String",
             "AllowedValues": ["ml.t2.medium","ml.t2.large","ml.t2.xlarge","ml.t2.2xlarge","ml.m5.large","ml.m5.xlarge","ml.m5.2xlarge","ml.m5.4xlarge","ml.m5.12xlarge","ml.m5.24xlarge","ml.m4.xlarge","ml.m4.4xlarge","ml.m4.10xlarge","ml.m4.16xlarge","ml.c5.large","ml.c5.xlarge","ml.c5.2xlarge","ml.c5.4xlarge","ml.c5.9xlarge","ml.c5.18xlarge","ml.c4.large","ml.c4.xlarge","ml.c4.2xlarge","ml.c4.4xlarge","ml.c4.8xlarge","ml.p3.2xlarge","ml.p3.8xlarge","ml.p3.16xlarge","ml.p2.xlarge","ml.p2.8xlarge","ml.p2.16xlarge"],
-            "Description": "The instance type to run the SageMaker endpoint on.  Check the documentation for your chosen algorithm for instance type recommendations."
+            "Description": "The instance type to run the SageMaker endpoint on.  Check the documentation for your chosen algorithm for instance type recommendations.",
+            "Default": "ml.t2.medium"
         }
     },
     "Mappings": {
