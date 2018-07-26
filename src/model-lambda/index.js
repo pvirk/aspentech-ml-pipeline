@@ -8,7 +8,7 @@ exports.handler = (event, context, callback) => {
     var awsRegion = process.env.AWS_REGION;
     var firehoseStream = process.env.FirehoseStream;
     var outputStream = process.env.OutputStream;
-	console.log('Received event:', JSON.stringify(event, null, 2));
+    console.log('Received event:', JSON.stringify(event, null, 2));
     async.each(event.Records, function(record, callback){
         var serializedData = new Buffer(record.kinesis.data, 'base64').toString('utf8');
         var priceHistoryBatch = JSON.parse(serializedData);
@@ -41,12 +41,12 @@ function modelData(priceHistoryBatch)
         var record = new PriceHistoryRecord(historyEntry.AvailabilityZone,
                                 historyEntry.InstanceType,
                                 historyEntry.SpotPrice,
-                                priceHistoryBatch.startTime,
+                                historyEntry.Timestamp,
                                 null);
         console.log("Adding price history record: " + JSON.stringify(record));
         records.push(record);
     }
-	return records;
+    return records;
 }
 
 function buildPartitionKey(entry){
