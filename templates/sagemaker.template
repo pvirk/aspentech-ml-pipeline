@@ -48,13 +48,9 @@
             "Type": "String",
             "Description": "S3 Bucket where sage maker models lives"
         },
-        "ContextLength": {
+        "HyperParameters": {
             "Type": "String",
-            "Description": "The length of time SageMaker uses as a sample of data to make predictions"
-        },
-        "PredictionLength": {
-            "Type": "String",
-            "Description": "The length of time SageMaker predicts"
+            "Description": "The hyperparameters that will be passed to the SageMaker training algorithm, in JSON format.  See the HyperParameters section under the algorithm you are using from https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html"
         },
         "TrainingInstanceCount": {
             "Type": "String",
@@ -288,6 +284,15 @@
                         "Ref": "StackSuffix"
                     }]]
                 },
+                "BucketEncryption": {
+                    "ServerSideEncryptionConfiguration": [
+                        {
+                            "ServerSideEncryptionByDefault": {
+                                "SSEAlgorithm": "AES256"
+                            }
+                        }
+                    ]
+                },
                 "AccessControl": "BucketOwnerFullControl",
                 "NotificationConfiguration": {
                     "LambdaConfigurations": [{
@@ -327,6 +332,15 @@
                     }, {
                         "Ref": "StackSuffix"
                     }]]
+                },
+                "BucketEncryption": {
+                    "ServerSideEncryptionConfiguration": [
+                        {
+                            "ServerSideEncryptionByDefault": {
+                                "SSEAlgorithm": "AES256"
+                            }
+                        }
+                    ]
                 },
                 "AccessControl": "BucketOwnerFullControl",
                 "NotificationConfiguration": {
@@ -1033,11 +1047,8 @@
                                 "Ref": "StackSuffix"
                             }]]
                         },
-                        "ContextLength": {
-                            "Ref": "ContextLength"
-                        },
-                        "PredictionLength": {
-                            "Ref": "PredictionLength"
+                        "HyperParameters": {
+                            "Ref": "HyperParameters"
                         },
                         "SageMakerInputDataPrefix": {
                             "Ref": "SageMakerInputDataPrefix"
@@ -1079,11 +1090,8 @@
                         "SageMakerOutputDataPrefix": {
                             "Ref": "SageMakerOutputDataPrefix"
                         },
-                        "ContextLength": {
-                            "Ref": "ContextLength"
-                        },
-                        "PredictionLength": {
-                            "Ref": "PredictionLength"
+                        "HyperParameters": {
+                            "Ref": "HyperParameters"
                         },
                         "TrainingInstanceCount": {
                             "Ref": "TrainingInstanceCount"
@@ -1097,7 +1105,7 @@
                         "TrainingMaxRuntimeSeconds": {
                             "Ref": "TrainingMaxRuntimeSeconds"
                         },
-                        "DeepARImage": {
+                        "TrainingImage": {
                             "Fn::Join": ["/", [
                                 {"Fn::FindInMap": ["RegionMap", {"Ref": "AWS::Region"}, { "Ref": "SageMakerAlgorithm" }]},
                                 {"Fn::FindInMap": ["AlgoMap", { "Ref": "SageMakerAlgorithm" }, "image"]}
@@ -1134,7 +1142,7 @@
                 "Timeout": 300,
                 "Environment": {
                     "Variables": {
-                        "DeepARImage": {
+                        "TrainingImage": {
                             "Fn::Join": ["/", [
                                 {"Fn::FindInMap": ["RegionMap", {"Ref": "AWS::Region"}, { "Ref": "SageMakerAlgorithm" }]},
                                 {"Fn::FindInMap": ["AlgoMap", { "Ref": "SageMakerAlgorithm" }, "image"]}

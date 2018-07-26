@@ -125,6 +125,15 @@
                         }
                     ]
                 },
+                "BucketEncryption": {
+                    "ServerSideEncryptionConfiguration": [
+                        {
+                            "ServerSideEncryptionByDefault": {
+                                "SSEAlgorithm": "AES256"
+                            }
+                        }
+                    ]
+                },
                 "Tags": []
             }
         },
@@ -241,7 +250,10 @@
                                 "def copy_objects(source_bucket, dest_bucket, prefix, objects):",
                                 "    s3 = boto3.client('s3')",
                                 "    for o in objects:",
-                                "        key = prefix + '/' + o",
+                                "        if prefix:",
+                                "           key = prefix + '/' + o",
+                                "        else:",
+                                "           key = o",
                                 "        copy_source = {",
                                 "            'Bucket': source_bucket,",
                                 "            'Key': key",
@@ -252,7 +264,13 @@
                                 "",
                                 "def delete_objects(bucket, prefix, objects):",
                                 "    s3 = boto3.client('s3')",
-                                "    objects = {'Objects': [{'Key': prefix + '/' + o} for o in objects]}",
+                                "    keys=[]",
+                                "    for o in objects:",
+                                "        if prefix:",
+                                "           keys.append(prefix + '/' + o)",
+                                "        else:",
+                                "           keys.append(o)",
+                                "    objects = {'Objects': [{'Key': key} for key in keys]}",
                                 "    s3.delete_objects(Bucket=bucket, Delete=objects)",
                                 "",
                                 "",

@@ -59,6 +59,15 @@
                 "BucketName": {
                     "Fn::Join": ["-", [{"Ref": "DataLakeS3BucketName"}, {"Ref" : "StackSuffix"}]]
                 },
+                "BucketEncryption": {
+                    "ServerSideEncryptionConfiguration": [
+                        {
+                            "ServerSideEncryptionByDefault": {
+                                "SSEAlgorithm": "AES256"
+                            }
+                        }
+                    ]
+                },
                 "AccessControl": "BucketOwnerFullControl"
             }
         },

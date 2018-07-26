@@ -32,12 +32,8 @@
         "ParameterValue": "$[taskcat_genuuid]"
     },
     {
-        "ParameterKey": "ContextLength",
-        "ParameterValue": "72"
-    },
-    {
-        "ParameterKey": "PredictionLength",
-        "ParameterValue": "24"
+        "ParameterKey": "SageMakerHyperParameters",
+        "ParameterValue": "{\"time_freq\":\"H\",\"context_length\":72,\"prediction_length\":24}"
     },
     {
         "ParameterKey": "TrainingInstanceCount",

@@ -21,7 +21,7 @@
     },
     {
         "ParameterKey": "QSS3KeyPrefix",
-        "ParameterValue": ""
+        "ParameterValue": "lambda"
     },
     {
         "ParameterKey": "SageMakerInputS3BucketName",
@@ -32,12 +32,8 @@
         "ParameterValue": "imet-sagemaker-demo-ml-model"
     },
     {
-        "ParameterKey": "ContextLength",
-        "ParameterValue": "72"
-    },
-    {
-        "ParameterKey": "PredictionLength",
-        "ParameterValue": "24"
+        "ParameterKey": "SageMakerHyperParameters",
+        "ParameterValue": "{\"time_freq\":\"H\",\"context_length\":72,\"prediction_length\":24}"
     },
     {
         "ParameterKey": "TrainingInstanceCount",

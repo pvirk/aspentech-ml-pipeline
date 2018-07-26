@@ -57,14 +57,13 @@ function getParams(awsRegion, record, callback){
 	var s3Bucket = record.s3.bucket.name;
 	var trainingKey = record.s3.object.key;
 	var testKey = trainingKey.replace("train/train.json", "test/test.json");
-	var contextLength = process.env.ContextLength;
-	var predictionLength = process.env.PredictionLength;
 	getNumCats(awsRegion, s3Bucket, testKey, function(err, numCats){
 		if(err){
 			callback(err);
 		}
 		else{
-			var hyperParameters = getHyperParameters(contextLength, predictionLength, numCats);
+			var hyperParameters = JSON.parse(process.env.HyperParameters);
+			hyperParameters.cardinality = numCats;
 			var dateString = new Date().toISOString().replace(":", "-").replace(":", "-").slice(0, -5);
 			var instanceCount = parseInt(process.env.TrainingInstanceCount);
 			var instanceType = process.env.TrainingInstanceType;
@@ -76,8 +75,8 @@ function getParams(awsRegion, record, callback){
 			var resourceConfig = getResourceConfig(instanceCount, instanceType, instanceVolumeSize);
 			var trainingJobName = getTrainingJobName(dateString);
 			var roleArn = process.env.TrainingRoleArn;
-			var deepARImage = process.env.DeepARImage;
-			var algorithmSpecification = getAlgorithmSpecification(deepARImage);
+			var trainingImage = process.env.TrainingImage;
+			var algorithmSpecification = getAlgorithmSpecification(trainingImage);
 			var maxRuntimeSeconds = process.env.TrainingMaxRuntimeSeconds;
 			var stoppingCondition = getStoppingCondition(maxRuntimeSeconds);
 			var params = {
@@ -95,25 +94,6 @@ function getParams(awsRegion, record, callback){
 	});
 }
 
-
-function getHyperParameters(contextLength, predictionLength, numCats){
-	var hyperParameters = {
-	    "time_freq": "H",
-	    "context_length": contextLength,
-	    "prediction_length": predictionLength,
-	    "num_cells": '40',
-	    "num_layers": '3',
-	    "likelihood": 'gaussian',
-	    "epochs": '20',
-	    "cardinality": numCats,
-	    "embedding_dimension": '20',
-	    "mini_batch_size": '32',
-	    "learning_rate": '0.001',
-	    "dropout_rate": '0.05',
-	    "early_stopping_patience": '10'
-	};
-	return hyperParameters;
-}
 
 function getInputDataConfig(bucketName, trainingDataKey, testDataKey){
 	var trainingDataUri = `s3://${bucketName}/${trainingDataKey}`;
@@ -161,12 +141,12 @@ function getResourceConfig(instanceCount, instanceType, instanceVolumeSize){
 }
 
 function getTrainingJobName(dateString){
-	return `ec2-spot-data-training-${dateString}`;
+	return `training-${dateString}`;
 }
 	
-function getAlgorithmSpecification(deepARImage){
+function getAlgorithmSpecification(trainingImage){
 	var algorithmSpecification = {
-		TrainingImage: deepARImage,
+		TrainingImage: trainingImage,
     	TrainingInputMode: 'File'
 	};
     return algorithmSpecification;

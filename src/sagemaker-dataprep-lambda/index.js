@@ -53,8 +53,9 @@ function prepData(awsRegion, inputBucketName, outputBucketName, inputPrefix, out
 function translateData(inputS3Objects){
 	var trainingRows = [];
 	var testRows = [];
-	var contextLength = parseInt(process.env.ContextLength);
-	var predictionLength = parseInt(process.env.PredictionLength);
+	var hyperParameters = JSON.parse(process.env.HyperParameters);
+	var contextLength = hyperParameters.context_length;
+	var predictionLength = hyperParameters.prediction_length;
 	for(var s3Object of inputS3Objects){
 		cleanAndSplitRow(s3Object, contextLength, predictionLength, trainingRows, testRows);
 	}
