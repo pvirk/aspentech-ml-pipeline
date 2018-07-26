@@ -11,7 +11,7 @@ destination="$package_folder/$filename"
 
 cd $source
 
-s3Key="$lambda/$filename"
+s3Key="lambda/$lambda/$filename"
 
 npm install
 zip -r $lambda .
