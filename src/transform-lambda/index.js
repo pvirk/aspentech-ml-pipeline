@@ -7,7 +7,7 @@ exports.handler = (event, context, callback) => {
     var awsRegion = process.env.AWS_REGION;
     var outputBucketName = process.env.OutputBucketName;
     var outputPrefix = process.env.OutputPrefix;
-	console.log('Received event:', JSON.stringify(event, null, 2));
+    console.log('Received event:', JSON.stringify(event, null, 2));
     async.each(event.Records, function(record, callback){
         var dataString = new Buffer(record.kinesis.data, 'base64').toString('utf8');
         var priceHistoryRecord = JSON.parse(dataString);
@@ -86,9 +86,9 @@ function updateTarget(sageMakerRecord, priceHistoryRecord)
         // If new entry belongs at or past end of list, add any necessary empty entries and append the new entry
         if(hoursBetween - sageMakerRecord.target.length >= 0){
             // If there is a gap between the end of the current list and the new value, fill with nulls
-            var emptyPrices = Array(sageMakerRecord.target.length).fill(null);
+            var emptyPrices = Array(hoursBetweenSageMakerRecord.target.length).fill(null);
             console.log('Padding end of list with %d empty prices and adding to end of list', emptyPrices.length);
-            sageMakerRecord.target.concat(emptyPrices);
+            sageMakerRecord.target = sageMakerRecord.target.concat(emptyPrices);
             sageMakerRecord.target.push(priceHistoryRecord.spotPrice)
         }
         else
