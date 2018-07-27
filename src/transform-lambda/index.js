@@ -57,12 +57,12 @@ function transformData(awsRegion, bucketName, key, priceHistoryRecord, callback)
             updateTarget(sageMakerRecord, priceHistoryRecord);
             callback(null, sageMakerRecord);
         }      
-    })
-};
+    });
+}
 
 function getHoursBetween(date1, date2)
 {
-    var hoursBetween = Math.abs(date1.getTime() - date2.getTime()) / 36e5;
+    var hoursBetween = Math.ceil(Math.abs(date1.getTime() - date2.getTime()) / 36e5);
     return hoursBetween;
 }
 
@@ -86,10 +86,10 @@ function updateTarget(sageMakerRecord, priceHistoryRecord)
         // If new entry belongs at or past end of list, add any necessary empty entries and append the new entry
         if(hoursBetween - sageMakerRecord.target.length >= 0){
             // If there is a gap between the end of the current list and the new value, fill with nulls
-            var emptyPrices = Array(hoursBetween - SageMakerRecord.target.length).fill(null);
+            var emptyPrices = Array(hoursBetween - sageMakerRecord.target.length).fill(null);
             console.log('Padding end of list with %d empty prices and adding to end of list', emptyPrices.length);
             sageMakerRecord.target = sageMakerRecord.target.concat(emptyPrices);
-            sageMakerRecord.target.push(priceHistoryRecord.spotPrice)
+            sageMakerRecord.target.push(priceHistoryRecord.spotPrice);
         }
         else
         {
