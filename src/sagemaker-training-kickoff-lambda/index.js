@@ -63,7 +63,6 @@ function getParams(awsRegion, record, callback){
 		}
 		else{
 			var hyperParameters = JSON.parse(process.env.HyperParameters);
-			hyperParameters.cardinality = numCats;
 			var dateString = new Date().toISOString().replace(":", "-").replace(":", "-").slice(0, -5);
 			var instanceCount = parseInt(process.env.TrainingInstanceCount);
 			var instanceType = process.env.TrainingInstanceType;
