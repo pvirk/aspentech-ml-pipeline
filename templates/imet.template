@@ -728,14 +728,6 @@
                     "Fn::GetAtt": ["IngestTriggerRule", "Arn"]
                 }
             }
-        },
-        "FillLake": {
-            "Type": "AWS::CloudFormation::CustomResource",
-            "Properties": {
-                "ServiceToken": {
-                    "Fn::GetAtt": ["IngestLambda", "Arn"]
-                }
-            }
         }
     },
     "Outputs" : {
