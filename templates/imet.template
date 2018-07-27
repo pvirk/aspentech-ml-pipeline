@@ -483,6 +483,7 @@
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 90,
+                "MemorySize": "1024",
                 "Environment": {
                     "Variables": {
                         "OutputStream": {
@@ -508,6 +509,7 @@
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 90,
+                "MemorySize": "2048",
                 "Environment": {
                     "Variables": {
                         "OutputStream": {
@@ -536,6 +538,7 @@
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 30,
+                "MemorySize": "1024",
                 "Environment": {
                     "Variables": {
                         "OutputStream": {
@@ -564,6 +567,7 @@
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 30,
+                "MemorySize": "1024",
                 "Environment": {
                     "Variables": {
                         "OutputBucketName": {
