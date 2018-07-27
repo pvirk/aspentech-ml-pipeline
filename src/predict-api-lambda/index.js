@@ -37,7 +37,6 @@ function validate(startDate, endDate, callback) {
     return null;
 }
 
-
 function readData(instanceType, az, callback)
 {
     var awsRegion = process.env.AWS_REGION;
@@ -55,7 +54,13 @@ function readData(instanceType, az, callback)
                 else {
                     var historicals = JSON.parse(historicalsBody);
                     var target = [];
+                    var previousItem = "0.0";
                     for(var i = 0; i < historicals.target.length; i++) {
+                        if(historicals.target[i] == null){
+                            historicals.target[i] = previousItem;
+                        } else{
+                            previousItem = historicals.target[i];
+                        }
                         target[i] = parseFloat(historicals.target[i]);
                     }
                     historicals.target = target;

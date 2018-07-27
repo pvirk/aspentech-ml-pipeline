@@ -57,27 +57,42 @@ function translateData(inputS3Objects){
 	var hyperParameters = JSON.parse(process.env.HyperParameters);
 	var contextLength = parseInt(hyperParameters.context_length);
 	var predictionLength = parseInt(hyperParameters.prediction_length);
-	var minCat = getMinCat(inputS3Objects, dateString);
-	for(var s3Object of inputS3Objects){
+	var inputDataRows = inputS3Objects.map(function(o) { return JSON.parse(o); });
+	var cats = inputDataRows.map(function(r) { return r.cat; });
+	var minMaxCat = getMinMaxCat(cats, dateString);
+	var minCat = minMaxCat["min"];
+	var maxCat = minMaxCat["max"];
+	for(var i = minCat; i < maxCat; i++) {
+		if(cats.indexOf(i) < 0) {
+			var blankRow = { "start": inputDataRows[1].start, "target": Array(contextLength+predictionLength).fill("0.000000"), "cat": i};
+			console.log("Category %d is missing.  Adding blank row", i);
+			inputDataRows.push(blankRow);
+		}
+	}
+	for(var s3Object of inputDataRows){
 		cleanAndSplitRow(s3Object, contextLength, predictionLength, minCat, trainingRows, testRows);
 	}
 	var sageMakerInputDataPrefix = process.env.SageMakerInputDataPrefix;
 	var trainingDataKey = `${sageMakerInputDataPrefix}/${dateString}/train/train.json`;
 	var testDataKey = `${sageMakerInputDataPrefix}/${dateString}/test/test.json`;
-	console.log(`Writing training data to ${trainingDataKey}`);
-	console.log(`Writing test data to ${testDataKey}`);
+	console.log(`Writing ${trainingRows.length} training data rows to ${trainingDataKey}`);
+	console.log(`Writing ${testRows.length} test data to ${testDataKey}`);
+	
 	var trainingData = sageMakerRowsToS3Object(trainingRows, trainingDataKey);
 	var testData = sageMakerRowsToS3Object(testRows, testDataKey);
 	var s3Objects = [trainingData, testData];
 	return s3Objects;
 }
 
-function getMinCat(inputS3Objects, dateString) {
+function getMinMaxCat(cats, dateString) {
 	var minCat = 9999999;
-	for(var s3Object of inputS3Objects){
-		var category = JSON.parse(s3Object).cat
+	var maxCat = -1;
+	for(var category of cats){
 		if(category < minCat) {
 			minCat = category;
+		}
+		if(category > maxCat) {
+			maxCat = category;
 		}
 	}
 	var region = process.env.AWS_REGION;
@@ -87,7 +102,7 @@ function getMinCat(inputS3Objects, dateString) {
 		if(err) console.log(err);
 	});
 	console.log(`Subtracting ${minCat} from every category to zero-index`);
-	return minCat;
+	return {"min": minCat, "max": maxCat};
 }
 
 function sageMakerRowsToS3Object(rows, key){
@@ -120,19 +135,18 @@ function replicate(arr, times) {
      return res;
 }
 
-function cleanAndSplitRow(s3Object, contextLength, predictionLength, minCat, trainingRows, testRows){
-	var sageMakerRow = JSON.parse(s3Object);
+function cleanAndSplitRow(sageMakerRow, contextLength, predictionLength, minCat, trainingRows, testRows){
 	if(sageMakerRow.target) {
 		var requiredLength = contextLength + predictionLength;
+		var cat = sageMakerRow.cat - minCat;
 		if(sageMakerRow.target.length < requiredLength) {
-			console.log("There were not enough items in the row for category", sageMakerRow.cat,
+			console.log("There were not enough items in the row for category", cat,
 			"to generate a training and test file (Number of records:", sageMakerRow.target.length,
-			"Required number:", contextLength + predictionLength, ").  Repeating to get target length.");
+			"Required number:", requiredLength, ").  Repeating to get target length.");
 			sageMakerRow.target = replicate(sageMakerRow.target, requiredLength/sageMakerRow.target.length)
 		}
 		var splitIndex = sageMakerRow.target.length - 1 - contextLength;
 		var startTime = sageMakerRow.start;
-		var cat = sageMakerRow.cat - minCat;
 		var targetItems = cleanRow(sageMakerRow.target);
 		var trainingTarget = targetItems.slice(0, splitIndex);
 		var testTarget = targetItems.slice(splitIndex);
