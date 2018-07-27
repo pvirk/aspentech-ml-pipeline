@@ -421,13 +421,17 @@
                                 "Action": [
                                     "s3:Put*"
                                 ],
-                                "Resource": {
+                                "Resource": [{
                                     "Fn::Join": ["/", [{
                                         "Fn::GetAtt": ["SageMakerInputS3Bucket", "Arn"]
                                     }, {
                                         "Ref": "SageMakerInputDataPrefix"
                                     }, "*"]]
-                                }
+                                }, {
+                                    "Fn::Join": ["/", [{
+                                        "Ref": "DataLakeS3BucketARN"
+                                    }, "transform/*"]]
+                                }]
                             }
                         ]
                     }

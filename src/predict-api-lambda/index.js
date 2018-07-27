@@ -4,7 +4,7 @@ var AWS = require('aws-sdk');
 var oneWeek = 60*60*1000*24*7;
 
 exports.handler = (event, context, callback) => {
-	console.log('Received event:', JSON.stringify(event, null, 2));
+    console.log('Received event:', JSON.stringify(event, null, 2));
     var startDate = new Date(Date.parse(event.startDate));
     var endDate = new Date(Date.parse(event.endDate));
     var instanceType = event.instanceType;
@@ -17,10 +17,9 @@ exports.handler = (event, context, callback) => {
         var historicalEnd = new Date();
         var historicalStart = new Date(historicalEnd.getTime() - oneWeek);
         console.log('Getting historical data between %s and %s', historicalStart.toISOString(), historicalEnd.toISOString());
-        readData(instanceType, availabilityZone, function(err, results) {
+        readData(instanceType, availabilityZone, function(err, instanceTypePrices) {
             if(err) { callback(err, null); }
             else {
-                var instanceTypePrices = JSON.parse(results);
                 executeSageMakerDeepAR(process.env.SageMakerEndpointName, instanceTypePrices, startDate, endDate, callback);
             }
         });
@@ -44,9 +43,28 @@ function readData(instanceType, az, callback)
     var awsRegion = process.env.AWS_REGION;
     var bucketName = process.env.OutputBucketName;
     var prefix = process.env.ObjectPrefix;
-    var key = prefix+"/"+az+"/"+instanceType+".json";
+    var key = `${prefix}/${az}/${instanceType}.json`;
     console.log("getting data from file s3://%s/%s", bucketName, key);
-    awsHelpers.readS3Object(awsRegion, bucketName, key, callback);
+    awsHelpers.readS3Object(awsRegion, bucketName, `${prefix}/config.json`, function(err, body) {
+        if(err) { callback(err); }
+        else {
+            var content = JSON.parse(body);
+            var minCat = content.minCat
+            awsHelpers.readS3Object(awsRegion, bucketName, key, function(err, historicalsBody) {
+                if(err) { callback(err); }
+                else {
+                    var historicals = JSON.parse(historicalsBody);
+                    var target = [];
+                    for(var i = 0; i < historicals.target.length; i++) {
+                        target[i] = parseFloat(historicals.target[i]);
+                    }
+                    historicals.target = target;
+                    historicals.cat = historicals.cat - minCat;
+                    callback(null, historicals);
+                }
+            });
+        }
+    });
 }
 
 function executeSageMakerDeepAR(endpointName, historicals, startDate, endDate, callback) {
@@ -55,11 +73,6 @@ function executeSageMakerDeepAR(endpointName, historicals, startDate, endDate, c
     var now = new Date();
     var hoursOut = Math.ceil((endDate - now) / oneHour);
     var hourSpan = Math.ceil((endDate.getTime() - startDate.getTime()) / oneHour);
-    var target = [];
-    for(var i = 0; i < historicals.target.length; i++) {
-        target[i] = parseFloat(historicals.target[i]);
-    }
-    historicals.target = target;
     var deepARBody = { 
         "instances": [historicals],
         "configuration": {
@@ -67,7 +80,6 @@ function executeSageMakerDeepAR(endpointName, historicals, startDate, endDate, c
             "output_types": ["mean", "quantiles"],      
             "quantiles": ["0.1", "0.9"]
         }
-
     };
     var body = JSON.stringify(deepARBody);
     var params = {

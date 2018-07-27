@@ -53,14 +53,15 @@ function prepData(awsRegion, inputBucketName, outputBucketName, inputPrefix, out
 function translateData(inputS3Objects){
 	var trainingRows = [];
 	var testRows = [];
+	var dateString = new Date().toISOString().replace(":", "-").replace(":", "-").slice(0, -5);
 	var hyperParameters = JSON.parse(process.env.HyperParameters);
 	var contextLength = parseInt(hyperParameters.context_length);
 	var predictionLength = parseInt(hyperParameters.prediction_length);
+	var minCat = getMinCat(inputS3Objects, dateString);
 	for(var s3Object of inputS3Objects){
-		cleanAndSplitRow(s3Object, contextLength, predictionLength, trainingRows, testRows);
+		cleanAndSplitRow(s3Object, contextLength, predictionLength, minCat, trainingRows, testRows);
 	}
 	var sageMakerInputDataPrefix = process.env.SageMakerInputDataPrefix;
-	var dateString = new Date().toISOString().replace(":", "-").replace(":", "-").slice(0, -5);
 	var trainingDataKey = `${sageMakerInputDataPrefix}/${dateString}/train/train.json`;
 	var testDataKey = `${sageMakerInputDataPrefix}/${dateString}/test/test.json`;
 	console.log(`Writing training data to ${trainingDataKey}`);
@@ -71,11 +72,29 @@ function translateData(inputS3Objects){
 	return s3Objects;
 }
 
+function getMinCat(inputS3Objects, dateString) {
+	var minCat = 9999999;
+	for(var s3Object of inputS3Objects){
+		var category = JSON.parse(s3Object).cat
+		if(category < minCat) {
+			minCat = category;
+		}
+	}
+	var region = process.env.AWS_REGION;
+	var bucket = process.env.InputBucketName;
+	var prefix = process.env.InputPrefix;
+	awsHelpers.sendDataToS3(region, bucket, `${prefix}/config.json`, `{"minCat":${minCat}}`, function(err) {
+		if(err) console.log(err);
+	});
+	console.log(`Subtracting ${minCat} from every category to zero-index`);
+	return minCat;
+}
+
 function sageMakerRowsToS3Object(rows, key){
 	var s3Object = {
 		key: key,
 		data: rows.join('\n')
-	}
+	};
 	return s3Object;
 }
 
@@ -92,24 +111,37 @@ function cleanRow(targetItems){
 	return targetItems;
 }
 
-function cleanAndSplitRow(s3Object, contextLength, predictionLength, trainingRows, testRows){
+function replicate(arr, times) {
+     var al = arr.length,
+         rl = al*times,
+         res = new Array(rl);
+     for (var i=0; i<rl; i++)
+         res[i] = arr[i % al];
+     return res;
+}
+
+function cleanAndSplitRow(s3Object, contextLength, predictionLength, minCat, trainingRows, testRows){
 	var sageMakerRow = JSON.parse(s3Object);
-	if(sageMakerRow.target.length > (contextLength + predictionLength)){
+	if(sageMakerRow.target) {
+		var requiredLength = contextLength + predictionLength;
+		if(sageMakerRow.target.length < requiredLength) {
+			console.log("There were not enough items in the row for category", sageMakerRow.cat,
+			"to generate a training and test file (Number of records:", sageMakerRow.target.length,
+			"Required number:", contextLength + predictionLength, ").  Repeating to get target length.");
+			sageMakerRow.target = replicate(sageMakerRow.target, requiredLength/sageMakerRow.target.length)
+		}
 		var splitIndex = sageMakerRow.target.length - 1 - contextLength;
-		var trainingItem = {};
-		var testItem = {};
 		var startTime = sageMakerRow.start;
-		var cat = sageMakerRow.cat;
+		var cat = sageMakerRow.cat - minCat;
 		var targetItems = cleanRow(sageMakerRow.target);
 		var trainingTarget = targetItems.slice(0, splitIndex);
 		var testTarget = targetItems.slice(splitIndex);
 		var trainingItem = new SageMakerRecord(startTime, trainingTarget, cat);
+		//var trainStartTime = new Date(Date.parse(startTime).getTime() + splitIndex * 3600000);
 		var testItem = new SageMakerRecord(startTime, testTarget, cat);
 		trainingRows.push(JSON.stringify(trainingItem));
 		testRows.push(JSON.stringify(testItem));
 	} else {
-		console.log("There were not enough items in the row for category", sageMakerRow.cat,
-		"to generate a training and test file (Number of records:", sageMakerRow.target.length,
-		"Required number:", contextLength + predictionLength, ").");
+		console.log("Invalid row: ", sageMakerRow);
 	}
 }
