@@ -7,7 +7,8 @@
         "async": "~2.6.0",
         "aws-helpers": "file:../aws-helpers",
         "price-history-batch": "file:../price-history-batch",
-        "aws-constants": "file:../aws-constants"
+        "aws-constants": "file:../aws-constants",
+        "cfn-response": "1.0.1"
     },
     "private": true
 }

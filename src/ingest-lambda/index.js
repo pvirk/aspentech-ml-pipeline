@@ -3,6 +3,7 @@ var async = require('async');
 var awsHelpers = require('aws-helpers');
 var crypto = require('crypto');
 var PriceHistoryBatch = require('price-history-batch');
+var response = require('cfn-response');
 
 exports.handler = (event, context, callback) => {
 	console.log('Ingest handler received event:', event);
@@ -23,7 +24,21 @@ exports.handler = (event, context, callback) => {
 					context.succeed("Successfully processed Kinesis event");
 			}
 		});
-	}else{
+	} else if (event.StackId) {
+		console.log('Triggered by CloudFormation.  Backfilling 30 days of data.');
+		var endTime = new Date();
+		var startTime = new Date(endTime.getTime()-3600*24*1000*30);
+		queryPriceHistory(startTime, endTime, function(err){
+			if(err) {
+				console.log("Failed to process CloudFormation event" + err);
+				response.send(event, context, response.FAILED);
+			}
+			else {
+				console.log("Successfully processed CloudFormation event");
+				response.send(event, context, response.SUCCESS);
+			}
+		});
+	} else {
 		console.log('Triggered by CloudWatch');
 		var endTime = new Date()
 		endTime.setDate(endTime.getDate() - 1);
