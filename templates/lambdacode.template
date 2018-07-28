@@ -118,7 +118,7 @@
                     "Fn::If": [
                         "AutoGenOutputBucketName",
                         {
-                            "Fn::Join": ["-", [{ "Ref": "LambdaCodeS3Bucket" }, {"Ref" : "StackSuffix"}]]
+                            "Fn::Sub": "${LambdaCodeS3Bucket}-${StackSuffix}"
                         }, 
                         {
                             "Ref": "AWS::NoValue"
