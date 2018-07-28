@@ -1028,7 +1028,7 @@
                         "Ref": "LambdaCodeS3Bucket"
                     },
                     "S3Key": {
-                        "Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "SageMakerDataPrepLambdaCodeLocation"}]]
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${SageMakerDataPrepLambdaCodeLocation}"
                     }
                 },
                 "Runtime": "nodejs4.3",
@@ -1077,8 +1077,9 @@
                     "S3Bucket": {
                         "Ref": "LambdaCodeS3Bucket"
                     },
-                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "SageMakerTrainingKickoffLambdaCodeLocation"}]]}
-                    
+                    "S3Key": {
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${SageMakerTrainingKickoffLambdaCodeLocation}"
+                    }
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 300,
@@ -1139,7 +1140,7 @@
                         "Ref": "LambdaCodeS3Bucket"
                     },
                     "S3Key": {
-                        "Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "SageMakerEndpointUpdateLambdaCodeLocation"}]]
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${SageMakerEndpointUpdateLambdaCodeLocation}"
                     }
                 },
                 "Runtime": "nodejs4.3",

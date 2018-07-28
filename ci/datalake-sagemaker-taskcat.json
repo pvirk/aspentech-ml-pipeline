@@ -16,14 +16,6 @@
         "ParameterValue": "$[taskcat_genuuid]"
     },
     {
-        "ParameterKey": "QSS3BucketName",
-        "ParameterValue": "datalake-sagemaker-demo-lambda-code"
-    },
-    {
-        "ParameterKey": "QSS3KeyPrefix",
-        "ParameterValue": "quickstart-datalake-pariveda/packages"
-    },
-    {
         "ParameterKey": "SageMakerInputS3BucketName",
         "ParameterValue": "$[taskcat_genuuid]"
     },

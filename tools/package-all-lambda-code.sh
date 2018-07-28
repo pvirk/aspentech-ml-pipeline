@@ -8,15 +8,15 @@
 ./tools/package-lambda-code.sh deliver-api-lambda
 ./tools/package-lambda-code.sh predict-api-lambda
 
-rm -rf src/ingest-lambda/node_modules
-rm -rf  src/model-lambda/node_modules
-rm -rf  src/enhance-lambda/node_modules
-rm -rf  src/transform-lambda/node_modules
-rm -rf  src/sagemaker-dataprep-lambda/node_modules
-rm -rf  src/sagemaker-training-kickoff-lambda/node_modules
-rm -rf  src/sagemaker-endpoint-update-lambda/node_modules
-rm -rf  src/deliver-api-lambda/node_modules
-rm -rf  src/predict-api-lambda/node_modules
-rm -rf  src/aws-helpers/node_modules
+rm -rf functions/source/ingest-lambda/node_modules
+rm -rf functions/source/model-lambda/node_modules
+rm -rf functions/source/enhance-lambda/node_modules
+rm -rf functions/source/transform-lambda/node_modules
+rm -rf functions/source/sagemaker-dataprep-lambda/node_modules
+rm -rf functions/source/sagemaker-training-kickoff-lambda/node_modules
+rm -rf functions/source/sagemaker-endpoint-update-lambda/node_modules
+rm -rf functions/source/deliver-api-lambda/node_modules
+rm -rf functions/source/predict-api-lambda/node_modules
+rm -rf functions/source/aws-helpers/node_modules
 
-cp templates/* packages/
+#cp templates/* packages/

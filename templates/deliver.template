@@ -50,9 +50,7 @@
                 },
                 "Path": "/",
                 "Policies": [{
-                    "PolicyName": {
-                        "Fn::Join": ["-", ["DeliverApiLambdaPolicy", {"Ref" : "StackSuffix"}]]
-                    },
+                    "PolicyName": {"Fn::Sub": "DeliverApiLambdaPolicy-${StackSuffix}"},
                     "PolicyDocument": {
                         "Version": "2012-10-17",
                         "Statement": [{
@@ -76,9 +74,7 @@
                                 "Action": [
                                     "s3:GetObject"
                                 ],
-                                "Resource": {
-                                    "Fn::Join": ["/", [{"Ref" : "DataLakeS3BucketARN"}, "transform/*"]]
-                                }
+                                "Resource": { "Fn::Sub": "${DataLakeS3BucketARN}/transform/*"}
                             }
                         ]
                     }
@@ -133,14 +129,7 @@
                                 ],
                                 "Effect": "Allow",
                                 "Resource": {
-                                    "Fn::Join": ["/", [
-                                        "arn:aws:sagemaker:*:*:endpoint", {
-                                        "Fn::Join": ["-", 
-                                        [
-                                            {"Ref" : "SageMakerEndpointName"}, 
-                                            {"Ref" : "StackSuffix"}
-                                        ]]}
-                                    ]]
+                                    "Fn::Sub": "arn:aws:sagemaker:*:*:endpoint/${SageMakerEndpointName}-${StackSuffix}"
                                 },
                                 "Sid": "GetPredictions"
                             }, 
@@ -212,7 +201,9 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref" : "LambdaCodeS3Bucket"},
-                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref" : "DeliverApiLambdaCodeLocation"}]]}
+                    "S3Key": {
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${DeliverApiLambdaCodeLocation}"
+                    }
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 30,
@@ -238,7 +229,9 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref" : "LambdaCodeS3Bucket"},
-                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref" : "PredictApiLambdaCodeLocation"}]]}
+                    "S3Key": {
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${PredictApiLambdaCodeLocation}"
+                    }
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 30,

@@ -212,15 +212,15 @@
     },
     "Mappings": {
         "LambdaCode": {
-        "IngestLambdaCodeLocation": { "path": "ingest-lambda/ingest-lambda.zip" },
-        "ModelLambdaCodeLocation": { "path": "model-lambda/model-lambda.zip" },
-        "EnhanceLambdaCodeLocation": { "path": "enhance-lambda/enhance-lambda.zip" },
-        "TransformLambdaCodeLocation": { "path": "transform-lambda/transform-lambda.zip" },
-        "DeliverApiLambdaCodeLocation": { "path": "deliver-api-lambda/deliver-api-lambda.zip" },
-        "PredictApiLambdaCodeLocation": { "path": "predict-api-lambda/predict-api-lambda.zip" },
-        "SageMakerDataPrepLambdaCodeLocation": { "path": "sagemaker-dataprep-lambda/sagemaker-dataprep-lambda.zip" },
-        "SageMakerTrainingKickoffLambdaCodeLocation": { "path": "sagemaker-training-kickoff-lambda/sagemaker-training-kickoff-lambda.zip" },
-        "SageMakerEndpointUpdateLambdaCodeLocation" : { "path": "sagemaker-endpoint-update-lambda/sagemaker-endpoint-update-lambda.zip" }    
+        "IngestLambdaCodeLocation": { "path": "functions/packages/ingest-lambda/ingest-lambda.zip" },
+        "ModelLambdaCodeLocation": { "path": "functions/packages/model-lambda/model-lambda.zip" },
+        "EnhanceLambdaCodeLocation": { "path": "functions/packages/enhance-lambda/enhance-lambda.zip" },
+        "TransformLambdaCodeLocation": { "path": "functions/packages/transform-lambda/transform-lambda.zip" },
+        "DeliverApiLambdaCodeLocation": { "path": "functions/packages/deliver-api-lambda/deliver-api-lambda.zip" },
+        "PredictApiLambdaCodeLocation": { "path": "functions/packages/predict-api-lambda/predict-api-lambda.zip" },
+        "SageMakerDataPrepLambdaCodeLocation": { "path": "functions/packages/sagemaker-dataprep-lambda/sagemaker-dataprep-lambda.zip" },
+        "SageMakerTrainingKickoffLambdaCodeLocation": { "path": "functions/packages/sagemaker-training-kickoff-lambda/sagemaker-training-kickoff-lambda.zip" },
+        "SageMakerEndpointUpdateLambdaCodeLocation" : { "path": "functions/packages/sagemaker-endpoint-update-lambda/sagemaker-endpoint-update-lambda.zip" }
         }
     },
     "Conditions": {
@@ -237,9 +237,7 @@
         "LambdaCopyStack": {
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
-                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "lambdacode.template"],
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "lambdacode.template"]]}]},
+                "TemplateURL": {"Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/lambdacode.template"},
                 "TimeoutInMinutes": "60",
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix" },
@@ -262,9 +260,7 @@
             "DependsOn": ["LambdaCopyStack"],
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
-                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "imet.template"],
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "imet.template"]]}]},
+                "TemplateURL": {"Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/imet.template"},
                 "TimeoutInMinutes": "60",
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix" },
@@ -282,9 +278,7 @@
             "DependsOn": ["LambdaCopyStack"],
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
-                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "sagemaker.template"],
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "sagemaker.template"]]}]},
+                "TemplateURL": {"Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/sagemaker.template"},
                 "TimeoutInMinutes": "60",
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix"},
@@ -315,9 +309,7 @@
             "DependsOn": ["LambdaCopyStack"],
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
-                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "deliver.template"],
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "deliver.template"]]}]},
+                "TemplateURL": {"Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/deliver.template"},
                 "TimeoutInMinutes": "60",
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix" },
