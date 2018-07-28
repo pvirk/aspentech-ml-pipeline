@@ -1,0 +1,11 @@
+{
+    "name": "ingest-lambda",
+    "version": "0.0.1",
+    "description": "A simple lambda that kicks off a Sagemaker training job",
+    "license": "MIT",
+    "dependencies": {
+        "async": "~2.6.0",
+        "aws-helpers": "file:../aws-helpers"
+    },
+    "private": true
+}

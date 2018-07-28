@@ -1,0 +1,13 @@
+{
+    "name": "transform-lambda",
+    "version": "0.0.1",
+    "description": "A simple lambda that appends history records to the SageMaker training files",
+    "license": "MIT",
+    "dependencies": {
+        "async": "~2.6.0",
+        "aws-helpers": "file:../aws-helpers",
+        "price-history-record": "file:../price-history-record",
+        "sagemaker-record": "file:../sagemaker-record"
+    },
+    "private": true
+}

@@ -1,0 +1,14 @@
+{
+    "name": "batch-requester",
+    "version": "0.0.1",
+    "private": true,
+    "main": "index.js",
+    "description": "A script to send a batch of requests to the ingest batch request stream",
+    "license": "MIT",
+    "dependencies": {
+        "async": "~2.6.0",
+        "deasync": "~0.1.12",
+        "aws-sdk": "~2.203.0",
+        "aws-helpers": "file:../aws-helpers"
+    }
+}

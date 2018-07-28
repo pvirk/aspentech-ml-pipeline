@@ -1,0 +1,13 @@
+{
+    "name": "model-lambda",
+    "version": "0.0.1",
+    "description": "A simple lambda that converts the raw ingest data into the common pipeline model",
+    "license": "MIT",
+    "dependencies": {
+        "async": "~2.6.0",
+        "aws-helpers": "file:../aws-helpers",
+        "price-history-record": "file:../price-history-record",
+        "price-history-batch": "file:../price-history-batch"
+    },
+    "private": true
+}

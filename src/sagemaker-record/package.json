@@ -1,0 +1,10 @@
+{
+    "name": "sagemaker-record",
+    "version": "0.0.1",
+    "private": true,
+    "main": "index.js",
+    "description": "Data model for Sage Maker",
+    "license": "MIT",
+    "dependencies": {
+    }
+}

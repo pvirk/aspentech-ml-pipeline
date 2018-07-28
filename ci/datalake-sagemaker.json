@@ -1,0 +1,70 @@
+[
+    {
+        "ParameterKey": "StackSuffix",
+        "ParameterValue": "prod"
+    },
+    {
+        "ParameterKey": "LambdaCodeS3Bucket",
+        "ParameterValue": "datalake-sagemaker-demo-lambda-code"
+    },
+    {
+        "ParameterKey": "SageMakerEndpointName",
+        "ParameterValue": "ec2-spot-data-endpoint"
+    },
+    {
+        "ParameterKey": "DataLakeS3BucketName",
+        "ParameterValue": "imet-sagemaker-demo-data-lake"
+    },
+    {
+        "ParameterKey": "QSS3BucketName",
+        "ParameterValue": "datalake-sagemaker-demo-lambda-code"
+    },
+    {
+        "ParameterKey": "QSS3KeyPrefix",
+        "ParameterValue": "lambda"
+    },
+    {
+        "ParameterKey": "SageMakerInputS3BucketName",
+        "ParameterValue": "imet-sagemaker-demo-ml-input"
+    },
+    {
+        "ParameterKey": "SageMakerModelS3BucketName",
+        "ParameterValue": "imet-sagemaker-demo-ml-model"
+    },
+    {
+        "ParameterKey": "SageMakerHyperParameters",
+        "ParameterValue": "{\"time_freq\":\"H\",\"context_length\":\"72\",\"prediction_length\":\"24\",\"epochs\":\"20\"}"
+    },
+    {
+        "ParameterKey": "TrainingInstanceCount",
+        "ParameterValue": "1"
+    },
+    {
+        "ParameterKey": "TrainingInstanceType",
+        "ParameterValue": "ml.c4.xlarge"
+    },
+    {
+        "ParameterKey": "TrainingInstanceVolumeSize",
+        "ParameterValue": "30"
+    },
+    {
+        "ParameterKey": "TrainingMaxRuntimeSeconds",
+        "ParameterValue": "86400"
+    },
+    {
+        "ParameterKey": "InitialEndpointInstanceCount",
+        "ParameterValue": "1"
+    },
+    {
+        "ParameterKey": "EndpointInstanceType",
+        "ParameterValue": "ml.t2.medium"
+    },
+    {
+        "ParameterKey": "SageMakerInputDataPrefix",
+        "ParameterValue": "sagemaker-input"
+    },
+    {
+        "ParameterKey": "SageMakerOutputDataPrefix",
+        "ParameterValue": "sagemaker-output"
+    }
+]
