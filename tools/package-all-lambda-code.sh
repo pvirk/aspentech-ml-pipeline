@@ -18,5 +18,3 @@ rm -rf functions/source/sagemaker-endpoint-update-lambda/node_modules
 rm -rf functions/source/deliver-api-lambda/node_modules
 rm -rf functions/source/predict-api-lambda/node_modules
 rm -rf functions/source/aws-helpers/node_modules
-
-#cp templates/* packages/
