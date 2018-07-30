@@ -13,7 +13,7 @@ global:
   - eu-west-1
   reporting: true
 tests:
-  json-master:
+  pariveda-master:
     parameter_input: datalake-sagemaker-taskcat.json
     regions:
     - us-east-1
