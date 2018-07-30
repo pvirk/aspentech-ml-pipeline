@@ -67,9 +67,6 @@
                 "DataLakeS3BucketName": {
                     "default": "Data Lake S3 Bucket"
                 },
-                "SageMakerAlgorithm": {
-                    "default": "SageMaker Algorithm"
-                },
                 "SageMakerInputS3BucketName": {
                     "default": "SageMaker Feature Staging Bucket"
                 },
@@ -150,13 +147,6 @@
             "ConstraintDescription": "Data Lake bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String",
             "Description": "S3 Bucket that will serve as the data lake"
-        },
-        "SageMakerAlgorithm": {
-            "Type": "String",
-            "AllowedPattern": "^KMeans|PCA|LDA|FactorizationMachines|LinearLearner|NeuralTopicModel|RandomCutForest|Seq2Seq|XGBoost|ObjectDetection|ImageClassification|DeepARForecasting|BlazingText|KNearestNeighbor$",
-            "ConstraintDescription": "SageMaker Algorithm must be one of KMeans, PCA, LDA, FactorizationMachines, LinearLearner, NeuralTopicModel, RandomCutForest, Seq2Seq, XGBoost, ObjectDetection, ImageClassification, DeepARForecasting, BlazingText, KNearestNeighbor",
-            "Default": "DeepARForecasting",
-            "Description": "Name of the SageMaker algorithm that will be trained"
         },
         "SageMakerEndpointName": {
             "Type": "String",
