@@ -9,7 +9,7 @@
                         "default": "General Settings"
                     },
                     "Parameters": [
-                        "OutputBucketName"
+                        "LambdaCodeS3Bucket"
                     ]
                 },
                 {
