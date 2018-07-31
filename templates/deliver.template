@@ -1,5 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Creates RESTful APIs to get historical and predicted values from the data stream.",
     "Parameters": {
         "StackSuffix": {
             "Type": "String",

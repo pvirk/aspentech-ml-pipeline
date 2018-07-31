@@ -1,5 +1,6 @@
 {
    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Creates an end to end system to ingest and process continuously updated data to use in training an ML model.  New models are trained and exposed as prediction endpoints daily based on the latest data.",
     "Metadata": {
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [
