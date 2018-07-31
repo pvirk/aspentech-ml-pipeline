@@ -5,7 +5,7 @@
     },
     {
         "ParameterKey": "LambdaCodeS3Bucket",
-        "ParameterValue": "$[taskcat_genuuid]"
+        "ParameterValue": "qs-ci-pariveda-lambda"
     },
     {
         "ParameterKey": "SageMakerEndpointName",
@@ -13,23 +13,15 @@
     },
     {
         "ParameterKey": "DataLakeS3BucketName",
-        "ParameterValue": "$[taskcat_genuuid]"
-    },
-    {
-        "ParameterKey": "QSS3BucketName",
-        "ParameterValue": "datalake-sagemaker-demo-lambda-code"
-    },
-    {
-        "ParameterKey": "QSS3KeyPrefix",
-        "ParameterValue": "quickstart-datalake-pariveda/packages"
+        "ParameterValue": "qs-ci-pariveda-dl"
     },
     {
         "ParameterKey": "SageMakerInputS3BucketName",
-        "ParameterValue": "$[taskcat_genuuid]"
+        "ParameterValue": "qs-ci-pariveda-sm-input"
     },
     {
         "ParameterKey": "SageMakerModelS3BucketName",
-        "ParameterValue": "$[taskcat_genuuid]"
+        "ParameterValue": "qs-ci-pariveda-sm-output"
     },
     {
         "ParameterKey": "SageMakerHyperParameters",
@@ -66,5 +58,9 @@
     {
         "ParameterKey": "SageMakerOutputDataPrefix",
         "ParameterValue": "sagemaker-output"
+    },
+    {
+        "ParameterKey":"QSS3BucketName",
+        "ParameterValue":"$[taskcat_autobucket]"
     }
 ]

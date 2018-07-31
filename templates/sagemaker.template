@@ -279,11 +279,7 @@
             "Condition": "CreateSageMakerInputS3Bucket",
             "Properties": {
                 "BucketName": {
-                    "Fn::Join": ["-", [{
-                        "Ref": "SageMakerInputS3BucketName"
-                    }, {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "${SageMakerInputS3BucketName}-${StackSuffix}"
                 },
                 "BucketEncryption": {
                     "ServerSideEncryptionConfiguration": [
@@ -328,11 +324,7 @@
             "Condition": "CreateSageMakerModelS3Bucket",
             "Properties": {
                 "BucketName": {
-                    "Fn::Join": ["-", [{
-                        "Ref": "SageMakerModelS3BucketName"
-                    }, {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "${SageMakerModelS3BucketName}-${StackSuffix}"
                 },
                 "BucketEncryption": {
                     "ServerSideEncryptionConfiguration": [
@@ -382,9 +374,7 @@
                 "Path": "/",
                 "Policies": [{
                     "PolicyName": {
-                        "Fn::Join": ["-", ["SageMakerDataPrepLambdaPolicy", {
-                            "Ref": "StackSuffix"
-                        }]]
+                        "Fn::Sub": "SageMakerDataPrepLambdaPolicy-${StackSuffix}"
                     },
                     "PolicyDocument": {
                         "Version": "2012-10-17",
@@ -403,9 +393,7 @@
                                     "s3:GetObject"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": ["/", [{
-                                        "Ref": "DataLakeS3BucketARN"
-                                    }, "transform/*"]]
+                                    "Fn::Sub": "${DataLakeS3BucketARN}/transform/*"
                                 }
                             },
                             {
@@ -422,25 +410,34 @@
                                 "Action": [
                                     "s3:Put*"
                                 ],
-                                "Resource": [{
-                                    "Fn::Join": ["/", [{
-                                        "Fn::GetAtt": ["SageMakerInputS3Bucket", "Arn"]
-                                    }, {
-                                        "Ref": "SageMakerInputDataPrefix"
-                                    }, "*"]]
-                                }, {
-                                    "Fn::Join": ["/", [{
-                                        "Ref": "DataLakeS3BucketARN"
-                                    }, "transform/*"]]
-                                }]
+                                "Resource": [
+                                    {
+                                        "Fn::Join": [
+                                            "/",
+                                            [
+                                                {
+                                                    "Fn::GetAtt": [
+                                                        "SageMakerInputS3Bucket",
+                                                        "Arn"
+                                                    ]
+                                                },
+                                                {
+                                                    "Ref": "SageMakerInputDataPrefix"
+                                                },
+                                                "*"
+                                            ]
+                                        ]
+                                    },
+                                    {
+                                        "Fn::Sub": "${DataLakeS3BucketARN}/transform/*"
+                                    }
+                                ]
                             }
                         ]
                     }
                 }],
                 "RoleName": {
-                    "Fn::Join": ["-", ["SageMakerDataPrepLambdaRole", {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "SageMakerDataPrepLambdaRole-${StackSuffix}"
                 }
             }
         },
@@ -460,9 +457,7 @@
                 "Path": "/",
                 "Policies": [{
                     "PolicyName": {
-                        "Fn::Join": ["-", ["SageMakerTrainingKickoffLambdaPolicy", {
-                            "Ref": "StackSuffix"
-                        }]]
+                        "Fn::Sub": "SageMakerTrainingKickoffLambdaPolicy-${StackSuffix}"
                     },
                     "PolicyDocument": {
                         "Version": "2012-10-17",
@@ -481,19 +476,7 @@
                                     "s3:GetObject"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": ["/", [{
-                                        "Fn::Join": [
-                                            "", ["arn:aws:s3:::", {
-                                                "Fn::Join": ["-", [{
-                                                    "Ref": "SageMakerInputS3BucketName"
-                                                }, {
-                                                    "Ref": "StackSuffix"
-                                                }]]
-                                            }]
-                                        ]
-                                    }, {
-                                        "Ref": "SageMakerInputDataPrefix"
-                                    }, "*"]]
+                                    "Fn::Sub": "arn:aws:s3:::${SageMakerInputS3BucketName}-${StackSuffix}/${SageMakerInputDataPrefix}/*"
                                 }
                             },
                             {
@@ -502,15 +485,7 @@
                                     "s3:ListBucket"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": [
-                                        "", ["arn:aws:s3:::", {
-                                            "Fn::Join": ["-", [{
-                                                "Ref": "SageMakerInputS3BucketName"
-                                            }, {
-                                                "Ref": "StackSuffix"
-                                            }]]
-                                        }]
-                                    ]
+                                    "Fn::Sub": "arn:aws:s3:::${SageMakerInputS3BucketName}-${StackSuffix}"
                                 }
                             },
                             {
@@ -519,11 +494,7 @@
                                     "sagemaker:CreateTrainingJob"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": ["", ["arn:aws:sagemaker:", {
-                                        "Ref": "AWS::Region"
-                                    }, ":", {
-                                        "Ref": "AWS::AccountId"
-                                    }, ":", "training-job/*training-*"]]
+                                    "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:training-job/*training-*"
                                 }
                             },
                             {
@@ -544,9 +515,7 @@
                     }
                 }],
                 "RoleName": {
-                    "Fn::Join": ["-", ["SageMakerTrainingKickoffLambdaRole", {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "SageMakerTrainingKickoffLambdaRole-${StackSuffix}"
                 }
             }
         },
@@ -566,9 +535,7 @@
                 "Path": "/",
                 "Policies": [{
                     "PolicyName": {
-                        "Fn::Join": ["-", ["SageMakerEndpointUpdateLambdaPolicy", {
-                            "Ref": "StackSuffix"
-                        }]]
+                        "Fn::Sub": "SageMakerEndpointUpdateLambdaPolicy-${StackSuffix}"
                     },
                     "PolicyDocument": {
                         "Version": "2012-10-17",
@@ -588,11 +555,7 @@
                                     "sagemaker:CreateModel"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": ["", ["arn:aws:sagemaker:", {
-                                        "Ref": "AWS::Region"
-                                    }, ":", {
-                                        "Ref": "AWS::AccountId"
-                                    }, ":", "model/*model-*"]]
+                                    "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:model/*model-*"
                                 }
                             },
                             {
@@ -601,11 +564,7 @@
                                     "sagemaker:CreateEndpointConfig"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": ["", ["arn:aws:sagemaker:", {
-                                        "Ref": "AWS::Region"
-                                    }, ":", {
-                                        "Ref": "AWS::AccountId"
-                                    }, ":", "endpoint-config/*endpoint-config-*"]]
+                                    "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint-config/*endpoint-config-*"
                                 }
                             },
                             {
@@ -614,11 +573,7 @@
                                     "sagemaker:DescribeEndpoint"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": ["", ["arn:aws:sagemaker:", {
-                                        "Ref": "AWS::Region"
-                                    }, ":", {
-                                        "Ref": "AWS::AccountId"
-                                    }, ":", "endpoint/*endpoint-*"]]
+                                    "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/*endpoint-*"
                                 }
                             },
                             {
@@ -629,18 +584,10 @@
                                 ],
                                 "Resource": [
                                     {
-                                        "Fn::Join": ["", ["arn:aws:sagemaker:", {
-                                            "Ref": "AWS::Region"
-                                        }, ":", {
-                                            "Ref": "AWS::AccountId"
-                                        }, ":", "endpoint/*endpoint-*"]]
+                                        "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/*endpoint-*"
                                     },
                                     {
-                                        "Fn::Join": ["", ["arn:aws:sagemaker:", {
-                                            "Ref": "AWS::Region"
-                                        }, ":", {
-                                            "Ref": "AWS::AccountId"
-                                        }, ":", "endpoint-config/*config-*"]]
+                                        "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint-config/*config-*"
                                     }
                                 ]
                             },
@@ -662,9 +609,7 @@
                     }
                 }],
                 "RoleName": {
-                    "Fn::Join": ["-", ["SageMakerEndpointUpdateLambdaRole", {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "SageMakerEndpointUpdateLambdaRole-${StackSuffix}"
                 }
             }
         },
@@ -684,9 +629,7 @@
                 "Path": "/",
                 "Policies": [{
                     "PolicyName": {
-                        "Fn::Join": ["-", ["SageMakerTrainingExecutionPolicy", {
-                            "Ref": "StackSuffix"
-                        }]]
+                        "Fn::Sub": "SageMakerTrainingExecutionPolicy-${StackSuffix}"
                     },
                     "PolicyDocument": {
                         "Version": "2012-10-17",
@@ -756,19 +699,7 @@
                                     "s3:GetObject"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": ["/", [{
-                                        "Fn::Join": [
-                                            "", ["arn:aws:s3:::", {
-                                                "Fn::Join": ["-", [{
-                                                    "Ref": "SageMakerInputS3BucketName"
-                                                }, {
-                                                    "Ref": "StackSuffix"
-                                                }]]
-                                            }]
-                                        ]
-                                    }, {
-                                        "Ref": "SageMakerInputDataPrefix"
-                                    }, "*"]]
+                                    "Fn::Sub": "arn:aws:s3:::${SageMakerInputS3BucketName}-${StackSuffix}/${SageMakerInputDataPrefix}/*"
                                 }
                             },
                             {
@@ -777,15 +708,7 @@
                                     "s3:ListBucket"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": [
-                                        "", ["arn:aws:s3:::", {
-                                            "Fn::Join": ["-", [{
-                                                "Ref": "SageMakerInputS3BucketName"
-                                            }, {
-                                                "Ref": "StackSuffix"
-                                            }]]
-                                        }]
-                                    ]
+                                    "Fn::Sub": "arn:aws:s3:::${SageMakerInputS3BucketName}-${StackSuffix}"
                                 }
                             },
                             {
@@ -794,28 +717,14 @@
                                     "s3:Put*"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": ["/", [{
-                                        "Fn::Join": [
-                                            "", ["arn:aws:s3:::", {
-                                                "Fn::Join": ["-", [{
-                                                    "Ref": "SageMakerModelS3BucketName"
-                                                }, {
-                                                    "Ref": "StackSuffix"
-                                                }]]
-                                            }]
-                                        ]
-                                    }, {
-                                        "Ref": "SageMakerOutputDataPrefix"
-                                    }, "*"]]
+                                    "Fn::Sub": "arn:aws:s3:::${SageMakerModelS3BucketName}-${StackSuffix}/${SageMakerOutputDataPrefix}/*"
                                 }
                             }
                         ]
                     }
                 }],
                 "RoleName": {
-                    "Fn::Join": ["-", ["SageMakerTrainingExecutionRole", {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "SageMakerTrainingExecutionRole-${StackSuffix}"
                 }
             }
         },
@@ -835,9 +744,7 @@
                 "Path": "/",
                 "Policies": [{
                     "PolicyName": {
-                        "Fn::Join": ["-", ["SageMakerEndpointRole", {
-                            "Ref": "StackSuffix"
-                        }]]
+                        "Fn::Sub": "SageMakerEndpointRole-${StackSuffix}"
                     },
                     "PolicyDocument": {
                         "Version": "2012-10-17",
@@ -907,28 +814,14 @@
                                     "s3:GetObject"
                                 ],
                                 "Resource": {
-                                    "Fn::Join": ["/", [{
-                                        "Fn::Join": [
-                                            "", ["arn:aws:s3:::", {
-                                                "Fn::Join": ["-", [{
-                                                    "Ref": "SageMakerModelS3BucketName"
-                                                }, {
-                                                    "Ref": "StackSuffix"
-                                                }]]
-                                            }]
-                                        ]
-                                    }, {
-                                        "Ref": "SageMakerOutputDataPrefix"
-                                    }, "*"]]
+                                    "Fn::Sub": "arn:aws:s3:::${SageMakerModelS3BucketName}-${StackSuffix}/${SageMakerOutputDataPrefix}/*"
                                 }
                             }
                         ]
                     }
                 }],
                 "RoleName": {
-                    "Fn::Join": ["-", ["SageMakerEndpointRole", {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "SageMakerEndpointRole-${StackSuffix}"
                 }
             }
         },
@@ -936,9 +829,7 @@
             "Type": "AWS::Events::Rule",
             "Properties": {
                 "Name": {
-                    "Fn::Join": ["-", ["SageMakerDataPrepTriggerRule", {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "SageMakerDataPrepTriggerRule-${StackSuffix}"
                 },
                 "ScheduleExpression": "cron(0 0 * * ? *)",
                 "Targets": [{
@@ -974,15 +865,7 @@
                     "Ref": "AWS::AccountId"
                 },
                 "SourceArn": {
-                    "Fn::Join": [
-                        "", ["arn:aws:s3:::", {
-                            "Fn::Join": ["-", [{
-                                "Ref": "SageMakerInputS3BucketName"
-                            }, {
-                                "Ref": "StackSuffix"
-                            }]]
-                        }]
-                    ]
+                    "Fn::Sub": "arn:aws:s3:::${SageMakerInputS3BucketName}-${StackSuffix}"
                 }
 
             }
@@ -999,15 +882,7 @@
                     "Ref": "AWS::AccountId"
                 },
                 "SourceArn": {
-                    "Fn::Join": [
-                        "", ["arn:aws:s3:::", {
-                            "Fn::Join": ["-", [{
-                                "Ref": "SageMakerModelS3BucketName"
-                            }, {
-                                "Ref": "StackSuffix"
-                            }]]
-                        }]
-                    ]
+                    "Fn::Sub": "arn:aws:s3:::${SageMakerModelS3BucketName}-${StackSuffix}"
                 }
 
             }
@@ -1016,9 +891,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "FunctionName": {
-                    "Fn::Join": ["-", ["SageMakerDataPrepLambda", {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "SageMakerDataPrepLambda-${StackSuffix}"
                 },
                 "Handler": "index.handler",
                 "Role": {
@@ -1029,7 +902,7 @@
                         "Ref": "LambdaCodeS3Bucket"
                     },
                     "S3Key": {
-                        "Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "SageMakerDataPrepLambdaCodeLocation"}]]
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${SageMakerDataPrepLambdaCodeLocation}"
                     }
                 },
                 "Runtime": "nodejs4.3",
@@ -1038,19 +911,11 @@
                 "Environment": {
                     "Variables": {
                         "InputBucketName": {
-                            "Fn::Join": ["-", [{
-                                "Ref": "DataLakeS3BucketName"
-                            }, {
-                                "Ref": "StackSuffix"
-                            }]]
+                            "Fn::Sub": "${DataLakeS3BucketName}-${StackSuffix}"
                         },
                         "InputPrefix": "transform",
                         "OutputBucketName": {
-                            "Fn::Join": ["-", [{
-                                "Ref": "SageMakerInputS3BucketName"
-                            }, {
-                                "Ref": "StackSuffix"
-                            }]]
+                            "Fn::Sub": "${SageMakerInputS3BucketName}-${StackSuffix}"
                         },
                         "HyperParameters": {
                             "Ref": "HyperParameters"
@@ -1066,9 +931,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "FunctionName": {
-                    "Fn::Join": ["-", ["SageMakerTrainingKickoffLambda", {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "SageMakerTrainingKickoffLambda-${StackSuffix}"
                 },
                 "Handler": "index.handler",
                 "Role": {
@@ -1078,19 +941,16 @@
                     "S3Bucket": {
                         "Ref": "LambdaCodeS3Bucket"
                     },
-                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "SageMakerTrainingKickoffLambdaCodeLocation"}]]}
-                    
+                    "S3Key": {
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${SageMakerTrainingKickoffLambdaCodeLocation}"
+                    }
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 300,
                 "Environment": {
                     "Variables": {
                         "OutputBucketName": {
-                            "Fn::Join": ["-", [{
-                                "Ref": "SageMakerModelS3BucketName"
-                            }, {
-                                "Ref": "StackSuffix"
-                            }]]
+                            "Fn::Sub": "${SageMakerModelS3BucketName}-${StackSuffix}"
                         },
                         "SageMakerOutputDataPrefix": {
                             "Ref": "SageMakerOutputDataPrefix"
@@ -1127,9 +987,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "FunctionName": {
-                    "Fn::Join": ["-", ["SageMakerEndpointUpdateLambda", {
-                        "Ref": "StackSuffix"
-                    }]]
+                    "Fn::Sub": "SageMakerEndpointUpdateLambda-${StackSuffix}"
                 },
                 "Handler": "index.handler",
                 "Role": {
@@ -1140,7 +998,7 @@
                         "Ref": "LambdaCodeS3Bucket"
                     },
                     "S3Key": {
-                        "Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "SageMakerEndpointUpdateLambdaCodeLocation"}]]
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${SageMakerEndpointUpdateLambdaCodeLocation}"
                     }
                 },
                 "Runtime": "nodejs4.3",
@@ -1163,7 +1021,7 @@
                             "Ref": "EndpointInstanceType"
                         },
                         "SageMakerEndpointName": {
-                            "Fn::Join": ["-", [{"Ref": "SageMakerEndpointName" }, {"Ref": "StackSuffix" }]]
+                            "Fn::Sub": "${SageMakerEndpointName}-${StackSuffix}"
                         }
                     }
                 }

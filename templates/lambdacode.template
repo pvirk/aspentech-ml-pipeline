@@ -9,7 +9,7 @@
                         "default": "General Settings"
                     },
                     "Parameters": [
-                        "OutputBucketName"
+                        "LambdaCodeS3Bucket"
                     ]
                 },
                 {
@@ -55,7 +55,7 @@
         "QSS3KeyPrefix": {
             "AllowedPattern": "^[0-9a-zA-Z-/]*$",
             "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
-            "Default": "quickstart-sagemaker-pariveda/",
+            "Default": "quickstart-datalake-pariveda/",
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
             "Type": "String"
         },
@@ -118,7 +118,7 @@
                     "Fn::If": [
                         "AutoGenOutputBucketName",
                         {
-                            "Fn::Join": ["-", [{ "Ref": "LambdaCodeS3Bucket" }, {"Ref" : "StackSuffix"}]]
+                            "Fn::Sub": "${LambdaCodeS3Bucket}-${StackSuffix}"
                         }, 
                         {
                             "Ref": "AWS::NoValue"
@@ -250,27 +250,17 @@
                                 "def copy_objects(source_bucket, dest_bucket, prefix, objects):",
                                 "    s3 = boto3.client('s3')",
                                 "    for o in objects:",
-                                "        if prefix:",
-                                "           key = prefix + '/' + o",
-                                "        else:",
-                                "           key = o",
+                                "        key = prefix + o",
                                 "        copy_source = {",
                                 "            'Bucket': source_bucket,",
                                 "            'Key': key",
                                 "        }",
-                                "        print('copying object: s3://' + source_bucket + '/' + key + ' to s3://' + dest_bucket + '/' + key)",
                                 "        s3.copy_object(CopySource=copy_source, Bucket=dest_bucket, Key=key)",
                                 "",
                                 "",
                                 "def delete_objects(bucket, prefix, objects):",
                                 "    s3 = boto3.client('s3')",
-                                "    keys=[]",
-                                "    for o in objects:",
-                                "        if prefix:",
-                                "           keys.append(prefix + '/' + o)",
-                                "        else:",
-                                "           keys.append(o)",
-                                "    objects = {'Objects': [{'Key': key} for key in keys]}",
+                                "    objects = {'Objects': [{'Key': prefix + o} for o in objects]}",
                                 "    s3.delete_objects(Bucket=bucket, Delete=objects)",
                                 "",
                                 "",

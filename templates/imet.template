@@ -41,7 +41,7 @@
                 {
                     "Fn::Equals": [
                         {
-                            "Fn::Join": ["-", [{"Ref": "DataLakeS3BucketName"}, {"Ref" : "StackSuffix"}]]
+                            "Fn::Sub": "${DataLakeS3BucketName}-${StackSuffix}"
                         },
                         {
                             "Ref": "LambdaCodeS3Bucket"
@@ -58,7 +58,7 @@
             "Condition": "CreateDataLakeS3Bucket",
             "Properties": {
                 "BucketName": {
-                    "Fn::Join": ["-", [{"Ref": "DataLakeS3BucketName"}, {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "${DataLakeS3BucketName}-${StackSuffix}"
                 },
                 "BucketEncryption": {
                     "ServerSideEncryptionConfiguration": [
@@ -88,7 +88,7 @@
                 "Path": "/",
                 "Policies": [{
                     "PolicyName": {
-                        "Fn::Join": ["-", ["IngestLambdaPolicy", {"Ref" : "StackSuffix"}]]
+                        "Fn::Sub": "IngestLambdaPolicy-${StackSuffix}"
                     },
                     "PolicyDocument": {
                         "Version": "2012-10-17",
@@ -140,7 +140,7 @@
                     }
                 }],
                 "RoleName": {
-                    "Fn::Join": ["-", ["IngestLambdaRole", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "IngestLambdaRole-${StackSuffix}"
                 }
             }
         },
@@ -160,7 +160,7 @@
                 "Path": "/",
                 "Policies": [{
                     "PolicyName": {
-                        "Fn::Join": ["-", ["ModelLambdaPolicy", {"Ref" : "StackSuffix"}]]
+                        "Fn::Sub": "ModelLambdaPolicy-${StackSuffix}"
                     },
                     "PolicyDocument": {
                         "Version": "2012-10-17",
@@ -215,7 +215,7 @@
                     }
                 }],
                 "RoleName": {
-                    "Fn::Join": ["-", ["ModelLambdaRole", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "ModelLambdaRole-${StackSuffix}"
                 }
             }
         },
@@ -235,7 +235,7 @@
                 "Path": "/",
                 "Policies": [{
                     "PolicyName": {
-                        "Fn::Join": ["-", ["EnhanceLambdaPolicy", {"Ref" : "StackSuffix"}]]
+                        "Fn::Sub": "EnhanceLambdaPolicy-${StackSuffix}"
                     },
                     "PolicyDocument": {
                         "Version": "2012-10-17",
@@ -290,7 +290,7 @@
                     }
                 }],
                 "RoleName": {
-                    "Fn::Join": ["-", ["EnhanceLambdaRole", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "EnhanceLambdaRole-${StackSuffix}"
                 }
             }
         },
@@ -310,7 +310,7 @@
                 "Path": "/",
                 "Policies": [{
                     "PolicyName": {
-                        "Fn::Join": ["-", ["TransformLambdaPolicy", {"Ref" : "StackSuffix"}]]
+                        "Fn::Sub": "TransformLambdaPolicy-${StackSuffix}"
                     },
                     "PolicyDocument": {
                         "Version": "2012-10-17",
@@ -372,7 +372,7 @@
                     }
                 }],
                 "RoleName": {
-                    "Fn::Join": ["-", ["TransformLambdaRole", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "TransformLambdaRole-${StackSuffix}"
                 }
             }
         },
@@ -380,7 +380,7 @@
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "RoleName": {
-                    "Fn::Join": ["-", ["FirehoseDeliveryRole", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "FirehoseDeliveryRole-${StackSuffix}"
                 },
                 "AssumeRolePolicyDocument": {
                     "Version": "2012-10-17",
@@ -402,7 +402,7 @@
                 },
                 "Policies": [{
                     "PolicyName": {
-                        "Fn::Join": ["-", ["FirehoseDeliveryPolicy", {"Ref" : "StackSuffix"}]]
+                        "Fn::Sub": "FirehoseDeliveryPolicy-${StackSuffix}"
                     },
                     "PolicyDocument": {
                         "Version": "2012-10-17",
@@ -430,7 +430,7 @@
             "Type": "AWS::Kinesis::Stream",
             "Properties": {
                 "Name": {
-                    "Fn::Join": ["-", ["BatchRequestStream", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "BatchRequestStream-${StackSuffix}"
                 },
                 "RetentionPeriodHours": 24,
                 "ShardCount": 1
@@ -440,7 +440,7 @@
             "Type": "AWS::Kinesis::Stream",
             "Properties": {
                 "Name": {
-                    "Fn::Join": ["-", ["IngestStream", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "IngestStream-${StackSuffix}"
                 },
                 "RetentionPeriodHours": 24,
                 "ShardCount": 1
@@ -450,7 +450,7 @@
             "Type": "AWS::Kinesis::Stream",
             "Properties": {
                 "Name": {
-                    "Fn::Join": ["-", ["ModelStream", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "ModelStream-${StackSuffix}"
                 },
                 "RetentionPeriodHours": 24,
                 "ShardCount": 1
@@ -460,7 +460,7 @@
             "Type": "AWS::Kinesis::Stream",
             "Properties": {
                 "Name": {
-                    "Fn::Join": ["-", ["EnhanceStream", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "EnhanceStream-${StackSuffix}"
                 },
                 "RetentionPeriodHours": 24,
                 "ShardCount": 3
@@ -470,7 +470,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "FunctionName": {
-                    "Fn::Join": ["-", ["IngestLambda", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "IngestLambda-${StackSuffix}"
                 },
                 "Handler": "index.handler",
                 "Role": {
@@ -479,7 +479,7 @@
                 "Code": {
                     "S3Bucket": {"Ref": "LambdaCodeS3Bucket"},
                     "S3Key": {
-                        "Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "IngestLambdaCodeLocation"}]]
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${IngestLambdaCodeLocation}"
                     }
                 },
                 "Runtime": "nodejs4.3",
@@ -488,7 +488,7 @@
                 "Environment": {
                     "Variables": {
                         "OutputStream": {
-                            "Fn::Join": ["-", ["IngestStream", {"Ref" : "StackSuffix"}]]
+                            "Fn::Sub": "IngestStream-${StackSuffix}"
                         }
                     }
                 }
@@ -498,7 +498,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "FunctionName": {
-                    "Fn::Join": ["-", ["ModelLambda", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "ModelLambda-${StackSuffix}"
                 },
                 "Handler": "index.handler",
                 "Role": {
@@ -506,7 +506,9 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref": "LambdaCodeS3Bucket"},
-                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "ModelLambdaCodeLocation"}]]}
+                    "S3Key": {
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${ModelLambdaCodeLocation}"
+                    }
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 90,
@@ -514,10 +516,10 @@
                 "Environment": {
                     "Variables": {
                         "OutputStream": {
-                            "Fn::Join": ["-", ["ModelStream", {"Ref" : "StackSuffix"}]]
+                            "Fn::Sub": "ModelStream-${StackSuffix}"
                         },
                         "FirehoseStream": {
-                            "Fn::Join": ["-", ["ModelFirehoseDeliveryStream", {"Ref" : "StackSuffix"}]]
+                            "Fn::Sub": "ModelFirehoseDeliveryStream-${StackSuffix}"
                         }
                     }
                 }
@@ -527,7 +529,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "FunctionName": {
-                    "Fn::Join": ["-", ["EnhanceLambda", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "EnhanceLambda-${StackSuffix}"
                 },
                 "Handler": "index.handler",
                 "Role": {
@@ -535,7 +537,9 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref": "LambdaCodeS3Bucket"},
-                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "EnhanceLambdaCodeLocation"}]]}
+                    "S3Key": {
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${EnhanceLambdaCodeLocation}"
+                    }
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 30,
@@ -543,10 +547,10 @@
                 "Environment": {
                     "Variables": {
                         "OutputStream": {
-                            "Fn::Join": ["-", ["EnhanceStream", {"Ref" : "StackSuffix"}]]
+                            "Fn::Sub": "EnhanceStream-${StackSuffix}"
                         },
                         "FirehoseStream": {
-                            "Fn::Join": ["-", ["EnhanceFirehoseDeliveryStream", {"Ref" : "StackSuffix"}]]
+                            "Fn::Sub": "EnhanceFirehoseDeliveryStream-${StackSuffix}"
                         }
                     }
                 }
@@ -556,7 +560,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "FunctionName": {
-                    "Fn::Join": ["-", ["TransformLambda", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "TransformLambda-${StackSuffix}"
                 },
                 "Handler": "index.handler",
                 "Role": {
@@ -564,7 +568,9 @@
                 },
                 "Code": {
                     "S3Bucket": {"Ref": "LambdaCodeS3Bucket"},
-                    "S3Key": {"Fn::Join": ["/", [{"Ref": "LambdaCodeS3KeyPrefix"}, {"Ref": "TransformLambdaCodeLocation"}]]}
+                    "S3Key": {
+                        "Fn::Sub": "${LambdaCodeS3KeyPrefix}${TransformLambdaCodeLocation}"
+                    }
                 },
                 "Runtime": "nodejs4.3",
                 "Timeout": 30,
@@ -572,11 +578,11 @@
                 "Environment": {
                     "Variables": {
                         "OutputBucketName": {
-                            "Fn::Join": ["-", [{"Ref": "DataLakeS3BucketName"}, {"Ref" : "StackSuffix"}]]
+                            "Fn::Sub": "${DataLakeS3BucketName}-${StackSuffix}"
                         },
                         "OutputPrefix": "transform",
                         "FirehoseStream": {
-                            "Fn::Join": ["-", ["TransformFirehoseDeliveryStream", {"Ref" : "StackSuffix"}]]
+                            "Fn::Sub": "TransformFirehoseDeliveryStream-${StackSuffix}"
                         }
                     }
                 }
@@ -647,7 +653,7 @@
             "Type": "AWS::KinesisFirehose::DeliveryStream",
             "Properties": {
                 "DeliveryStreamName": {
-                    "Fn::Join": ["-", ["ModelFirehoseDeliveryStream", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "ModelFirehoseDeliveryStream-${StackSuffix}"
                 },
                 "ExtendedS3DestinationConfiguration": {
                     "BucketARN":  {"Fn::GetAtt": ["DataLakeS3Bucket", "Arn"]},
@@ -668,7 +674,7 @@
             "Type": "AWS::KinesisFirehose::DeliveryStream",
             "Properties": {
                 "DeliveryStreamName": {
-                    "Fn::Join": ["-", ["EnhanceFirehoseDeliveryStream", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "EnhanceFirehoseDeliveryStream-${StackSuffix}"
                 },
                 "ExtendedS3DestinationConfiguration": {
                     "BucketARN":  {"Fn::GetAtt": ["DataLakeS3Bucket", "Arn"]},
@@ -689,7 +695,7 @@
             "Type": "AWS::KinesisFirehose::DeliveryStream",
             "Properties": {
                 "DeliveryStreamName": {
-                    "Fn::Join": ["-", ["TransformFirehoseDeliveryStream", {"Ref" : "StackSuffix"}]]
+                    "Fn::Sub": "TransformFirehoseDeliveryStream-${StackSuffix}"
                 },
                 "ExtendedS3DestinationConfiguration": {
                     "BucketARN":  {"Fn::GetAtt": ["DataLakeS3Bucket", "Arn"]},

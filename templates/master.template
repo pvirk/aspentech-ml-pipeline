@@ -47,17 +47,26 @@
                         "TrainingInstanceVolumeSize",
                         "TrainingMaxRuntimeSeconds"
                     ]
+                },
+                {
+                    "Label": {
+                        "default": "AWS Quick Start Configuration"
+                    },
+                    "Parameters": [
+                        "QSS3BucketName",
+                        "QSS3KeyPrefix"
+                    ]
                 }
             ],
             "ParameterLabels": {
                 "StackSuffix": {
                     "default": "Resource Suffix"
-                },             
+                },
                 "LambdaCodeS3Bucket": {
                     "default": "Lambda Code S3 Bucket"
                 },
                 "DataLakeS3BucketName": {
-                    "default": "Lambda Code S3 Bucket"
+                    "default": "Data Lake S3 Bucket"
                 },
                 "SageMakerInputS3BucketName": {
                     "default": "SageMaker Feature Staging Bucket"
@@ -107,7 +116,7 @@
             }
         }
     },
-   "Parameters": {
+    "Parameters": {
         "StackSuffix": {
             "AllowedPattern": "^[0-9a-z-]+$",
             "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, and hyphens (-).",
@@ -124,7 +133,7 @@
         "QSS3KeyPrefix": {
             "AllowedPattern": "^[0-9a-zA-Z-/]*$",
             "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
-            "Default": "quickstart-SageMaker-pariveda/",
+            "Default": "quickstart-datalake-pariveda/",
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
             "Type": "String"
         },
@@ -147,7 +156,22 @@
         },
         "SageMakerAlgorithm": {
             "Type": "String",
-            "AllowedValues": ["KMeans","PCA","LDA","FactorizationMachines","LinearLearner","NeuralTopicModel","RandomCutForest","Seq2Seq","XGBoost","ObjectDetection","ImageClassification","DeepARForecasting","BlazingText","KNearestNeighbor"],
+            "AllowedValues": [
+                "KMeans",
+                "PCA",
+                "LDA",
+                "FactorizationMachines",
+                "LinearLearner",
+                "NeuralTopicModel",
+                "RandomCutForest",
+                "Seq2Seq",
+                "XGBoost",
+                "ObjectDetection",
+                "ImageClassification",
+                "DeepARForecasting",
+                "BlazingText",
+                "KNearestNeighbor"
+            ],
             "ConstraintDescription": "SageMaker Algorithm must be one of KMeans, PCA, LDA, FactorizationMachines, LinearLearner, NeuralTopicModel, RandomCutForest, Seq2Seq, XGBoost, ObjectDetection, ImageClassification, DeepARForecasting, BlazingText, KNearestNeighbor",
             "Default": "DeepARForecasting",
             "Description": "Name of the SageMaker ML algorithm that will be trained."
@@ -156,7 +180,6 @@
             "Type": "String",
             "Description": "The hyperparameters that will be passed to the SageMaker training algorithm, in JSON format.  See the HyperParameters section under the algorithm you are using from https://docs.aws.amazon.com/SageMaker/latest/dg/algos.html",
             "Default": "{\"time_freq\":\"H\",\"context_length\":\"72\",\"prediction_length\":\"24\",\"epochs\":\"20\"}"
-
         },
         "SageMakerInputS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
@@ -189,7 +212,39 @@
         },
         "TrainingInstanceType": {
             "Type": "String",
-            "AllowedValues": ["ml.t2.medium","ml.t2.large","ml.t2.xlarge","ml.t2.2xlarge","ml.m5.large","ml.m5.xlarge","ml.m5.2xlarge","ml.m5.4xlarge","ml.m5.12xlarge","ml.m5.24xlarge","ml.m4.xlarge","ml.m4.4xlarge","ml.m4.10xlarge","ml.m4.16xlarge","ml.c5.large","ml.c5.xlarge","ml.c5.2xlarge","ml.c5.4xlarge","ml.c5.9xlarge","ml.c5.18xlarge","ml.c4.large","ml.c4.xlarge","ml.c4.2xlarge","ml.c4.4xlarge","ml.c4.8xlarge","ml.p3.2xlarge","ml.p3.8xlarge","ml.p3.16xlarge","ml.p2.xlarge","ml.p2.8xlarge","ml.p2.16xlarge"],
+            "AllowedValues": [
+                "ml.t2.medium",
+                "ml.t2.large",
+                "ml.t2.xlarge",
+                "ml.t2.2xlarge",
+                "ml.m5.large",
+                "ml.m5.xlarge",
+                "ml.m5.2xlarge",
+                "ml.m5.4xlarge",
+                "ml.m5.12xlarge",
+                "ml.m5.24xlarge",
+                "ml.m4.xlarge",
+                "ml.m4.4xlarge",
+                "ml.m4.10xlarge",
+                "ml.m4.16xlarge",
+                "ml.c5.large",
+                "ml.c5.xlarge",
+                "ml.c5.2xlarge",
+                "ml.c5.4xlarge",
+                "ml.c5.9xlarge",
+                "ml.c5.18xlarge",
+                "ml.c4.large",
+                "ml.c4.xlarge",
+                "ml.c4.2xlarge",
+                "ml.c4.4xlarge",
+                "ml.c4.8xlarge",
+                "ml.p3.2xlarge",
+                "ml.p3.8xlarge",
+                "ml.p3.16xlarge",
+                "ml.p2.xlarge",
+                "ml.p2.8xlarge",
+                "ml.p2.16xlarge"
+            ],
             "Description": "The instance type to train the SageMaker model with.  Check the documentation for your chosen algorithm for instance type recommendations.",
             "Default": "ml.t2.medium"
         },
@@ -216,22 +271,80 @@
         },
         "EndpointInstanceType": {
             "Type": "String",
-            "AllowedValues": ["ml.t2.medium","ml.t2.large","ml.t2.xlarge","ml.t2.2xlarge","ml.m5.large","ml.m5.xlarge","ml.m5.2xlarge","ml.m5.4xlarge","ml.m5.12xlarge","ml.m5.24xlarge","ml.m4.xlarge","ml.m4.4xlarge","ml.m4.10xlarge","ml.m4.16xlarge","ml.c5.large","ml.c5.xlarge","ml.c5.2xlarge","ml.c5.4xlarge","ml.c5.9xlarge","ml.c5.18xlarge","ml.c4.large","ml.c4.xlarge","ml.c4.2xlarge","ml.c4.4xlarge","ml.c4.8xlarge","ml.p3.2xlarge","ml.p3.8xlarge","ml.p3.16xlarge","ml.p2.xlarge","ml.p2.8xlarge","ml.p2.16xlarge"],
+            "AllowedValues": [
+                "ml.t2.medium",
+                "ml.t2.large",
+                "ml.t2.xlarge",
+                "ml.t2.2xlarge",
+                "ml.m5.large",
+                "ml.m5.xlarge",
+                "ml.m5.2xlarge",
+                "ml.m5.4xlarge",
+                "ml.m5.12xlarge",
+                "ml.m5.24xlarge",
+                "ml.m4.xlarge",
+                "ml.m4.4xlarge",
+                "ml.m4.10xlarge",
+                "ml.m4.16xlarge",
+                "ml.c5.large",
+                "ml.c5.xlarge",
+                "ml.c5.2xlarge",
+                "ml.c5.4xlarge",
+                "ml.c5.9xlarge",
+                "ml.c5.18xlarge",
+                "ml.c4.large",
+                "ml.c4.xlarge",
+                "ml.c4.2xlarge",
+                "ml.c4.4xlarge",
+                "ml.c4.8xlarge",
+                "ml.p3.2xlarge",
+                "ml.p3.8xlarge",
+                "ml.p3.16xlarge",
+                "ml.p2.xlarge",
+                "ml.p2.8xlarge",
+                "ml.p2.16xlarge"
+            ],
             "Description": "The instance type to run the SageMaker endpoint on.  Check the documentation for your chosen algorithm for instance type recommendations.",
             "Default": "ml.t2.medium"
         }
     },
+    "Rules": {
+        "SageMakerRegionRule": {
+            "Assertions": [
+                {
+                    "Assert": {
+                        "Fn::Contains": [
+                            [
+                                "us-east-1",
+                                "us-east-2",
+                                "us-west-2",
+                                "ap-northeast-1",
+                                "ap-northeast-2",
+                                "ap-southeast-2",
+                                "eu-central-1",
+                                "eu-west-1"
+                            ],
+                            {
+                                "Ref": "AWS::Region"
+                            }
+                        ]
+                    },
+                    "AssertDescription": "This Quick Start can only be launched in a region where Amazon SageMaker is available."
+                }
+            ]
+        }
+    },
     "Mappings": {
         "LambdaCode": {
-        "IngestLambdaCodeLocation": { "path": "ingest-lambda/ingest-lambda.zip" },
-        "ModelLambdaCodeLocation": { "path": "model-lambda/model-lambda.zip" },
-        "EnhanceLambdaCodeLocation": { "path": "enhance-lambda/enhance-lambda.zip" },
-        "TransformLambdaCodeLocation": { "path": "transform-lambda/transform-lambda.zip" },
-        "DeliverApiLambdaCodeLocation": { "path": "deliver-api-lambda/deliver-api-lambda.zip" },
-        "PredictApiLambdaCodeLocation": { "path": "predict-api-lambda/predict-api-lambda.zip" },
-        "SageMakerDataPrepLambdaCodeLocation": { "path": "sagemaker-dataprep-lambda/sagemaker-dataprep-lambda.zip" },
-        "SageMakerTrainingKickoffLambdaCodeLocation": { "path": "sagemaker-training-kickoff-lambda/sagemaker-training-kickoff-lambda.zip" },
-        "SageMakerEndpointUpdateLambdaCodeLocation" : { "path": "sagemaker-endpoint-update-lambda/sagemaker-endpoint-update-lambda.zip" }    
+        "IngestLambdaCodeLocation": { "path": "functions/packages/ingest-lambda/ingest-lambda.zip" },
+        "ModelLambdaCodeLocation": { "path": "functions/packages/model-lambda/model-lambda.zip" },
+        "EnhanceLambdaCodeLocation": { "path": "functions/packages/enhance-lambda/enhance-lambda.zip" },
+        "TransformLambdaCodeLocation": { "path": "functions/packages/transform-lambda/transform-lambda.zip" },
+        "DeliverApiLambdaCodeLocation": { "path": "functions/packages/deliver-api-lambda/deliver-api-lambda.zip" },
+        "PredictApiLambdaCodeLocation": { "path": "functions/packages/predict-api-lambda/predict-api-lambda.zip" },
+        "SageMakerDataPrepLambdaCodeLocation": { "path": "functions/packages/sagemaker-dataprep-lambda/sagemaker-dataprep-lambda.zip" },
+        "SageMakerTrainingKickoffLambdaCodeLocation": { "path": "functions/packages/sagemaker-training-kickoff-lambda/sagemaker-training-kickoff-lambda.zip" },
+        "SageMakerEndpointUpdateLambdaCodeLocation" : { "path": "functions/packages/sagemaker-endpoint-update-lambda/sagemaker-endpoint-update-lambda.zip" }
         }
     },
     "Conditions": {
@@ -244,13 +357,11 @@
             ]
         }
     },
-   "Resources": {
+    "Resources": {
         "LambdaCopyStack": {
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
-                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "lambdacode.template"],
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "lambdacode.template"]]}]},
+                "TemplateURL": {"Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/lambdacode.template"},
                 "TimeoutInMinutes": "60",
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix" },
@@ -273,9 +384,7 @@
             "DependsOn": ["LambdaCopyStack"],
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
-                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "imet.template"],
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "imet.template"]]}]},
+                "TemplateURL": {"Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/imet.template"},
                 "TimeoutInMinutes": "60",
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix" },
@@ -293,9 +402,7 @@
             "DependsOn": ["LambdaCopyStack"],
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
-                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "sagemaker.template"],
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "sagemaker.template"]]}]},
+                "TemplateURL": {"Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/sagemaker.template"},
                 "TimeoutInMinutes": "60",
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix"},
@@ -326,9 +433,7 @@
             "DependsOn": ["LambdaCopyStack"],
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
-                "TemplateURL": {"Fn::Join": ["/", { "Fn::If": [ "QSS3KeyPrefixEmpty", 
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, "deliver.template"],
-                    ["https://s3.amazonaws.com", { "Ref" : "QSS3BucketName" }, {"Ref": "QSS3KeyPrefix"}, "deliver.template"]]}]},
+                "TemplateURL": {"Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/deliver.template"},
                 "TimeoutInMinutes": "60",
                 "Parameters": {
                     "StackSuffix" : { "Ref" : "StackSuffix" },
@@ -342,5 +447,5 @@
                 }
             }
         }
-    }   
+    }
 }
