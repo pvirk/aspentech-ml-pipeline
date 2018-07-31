@@ -14,7 +14,7 @@
                 },
                 {
                     "Label": {
-                        "default": "S3 Data & Artifact Repositories"
+                        "default": "S3 Data & Artifact Repositories. Use a common prefix for all 4 parameters in this section to re-use a single bucket for all the 4 repositories."
                     },
                     "Parameters": [
                         "LambdaCodeS3Bucket",
@@ -141,13 +141,13 @@
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "Lambda Code bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String",
-            "Description": "S3 Bucket where lambda code will be copied to (within your account)"
+            "Description": "Prefix of the S3 Bucket where lambda code will be copied to (within your account).  The final bucket name will be the value of this parameter concatenated with a hyphen and resource suffix value."
         },
         "DataLakeS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "Data Lake bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String",
-            "Description": "S3 Bucket that will serve as the data lake"
+            "Description": "Prefix of the S3 Bucket that will serve as the data lake. The final bucket name will be the value of this parameter concatenated with a hyphen and resource suffix value."
         },
         "SageMakerEndpointName": {
             "Type": "String",
@@ -185,13 +185,13 @@
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "SageMaker Input bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String",
-            "Description": "S3 Bucket where SageMaker input data is created by the data prep lamba function "
+            "Description": "Prefix of the S3 Bucket where SageMaker input data is created by the data prep lamba function. The bucket name will be the value of this parameter concatenated with a hyphen and resource suffix value."
         },
         "SageMakerModelS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "SageMaker Model bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String",
-            "Description": "S3 Bucket where SageMaker models are saved after training"
+            "Description": "Prefix of the S3 Bucket where SageMaker models are saved after training. The bucket name will be the value of this parameter concatenated with a hyphen and resource suffix value"
         },
         "SageMakerInputDataPrefix": {
             "Type": "String",
