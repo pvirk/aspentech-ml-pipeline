@@ -8,15 +8,15 @@
         },
         "LambdaCodeS3Bucket": {
             "Type": "String",
-            "Description": "S3 Bucket where lambda code exists"
+            "Description": "Prefix of the S3 Bucket where lambda code exists. The bucket name will be the value of this parameter concatenated with a hyphen and resource suffix value."
         },
         "LambdaCodeS3KeyPrefix": {
             "Type": "String",
-            "Description": "S3 Bucket where lambda code exists"
+            "Description": "S3 Key where lambda code exists"
         },
         "DataLakeS3BucketName": {
             "Type": "String",
-            "Description": "S3 Bucket where data lake lives"
+            "Description": "Prefix of the S3 Bucket where data lake lives. The bucket name will be the value of this parameter concatenated with a hyphen and resource suffix value"
         },
         "IngestLambdaCodeLocation": {
             "Type": "String",
@@ -738,9 +738,9 @@
         }
     },
     "Outputs" : {
-        "DataLakeS3BucketARN" : {
-            "Description": "Data Lake S3 Bucket ARN",  
-            "Value" : {"Fn::GetAtt": ["DataLakeS3Bucket", "Arn"]}
+        "DataLakeS3Bucket" : {
+            "Description": "Data Lake S3 Bucket Full Name",  
+            "Value" : { "Ref": "DataLakeS3Bucket" }
         }
     }
 }

@@ -69,7 +69,7 @@ function getParams(awsRegion, record, callback){
 			var instanceVolumeSize = parseInt(process.env.TrainingInstanceVolumeSize);
 			var inputDataConfig = getInputDataConfig(s3Bucket, trainingKey, testKey);
 			var outputBucket = process.env.OutputBucketName;
-			var outputPrefix = process.env.SageMakerOutputDataPrefix;
+			var outputPrefix = process.env.SageMakerOutputModelPrefix;
 			var outputDataConfig = getOutputDataConfig(outputBucket, outputPrefix, dateString);
 			var resourceConfig = getResourceConfig(instanceCount, instanceType, instanceVolumeSize);
 			var trainingJobName = getTrainingJobName(dateString);

@@ -29,10 +29,6 @@
         "DataLakeS3BucketName": {
             "Type": "String",
             "Description": "S3 Bucket where data lake lives"
-        },
-        "DataLakeS3BucketARN": {
-            "Type": "String",
-            "Description": "ARN of S3 Bucket where data lake lives"
         }
     },
     "Resources": {
@@ -68,14 +64,14 @@
                                 "Action": [
                                     "s3:ListBucket"
                                 ],
-                                "Resource": {"Ref" : "DataLakeS3BucketARN"}
+                                "Resource": { "Fn::Sub": "arn:aws:s3:::${DataLakeS3BucketName}-${StackSuffix}" }
                             },
                             {
                                 "Effect": "Allow",
                                 "Action": [
                                     "s3:GetObject"
                                 ],
-                                "Resource": { "Fn::Sub": "${DataLakeS3BucketARN}/transform/*"}
+                                "Resource": { "Fn::Sub": "arn:aws:s3:::${DataLakeS3BucketName}-${StackSuffix}/transform/*"}
                             }
                         ]
                     }
@@ -111,14 +107,14 @@
                                 "Action": [
                                     "s3:ListBucket"
                                 ],
-                                "Resource": {"Ref" : "DataLakeS3BucketARN"}
+                                "Resource": { "Fn::Sub": "arn:aws:s3:::${DataLakeS3BucketName}-${StackSuffix}" }
                             },
                             {
                                 "Effect": "Allow",
                                 "Action": [
                                     "s3:GetObject"
                                 ],
-                                "Resource": { "Fn::Sub": "${DataLakeS3BucketARN}/transform/*"}
+                                "Resource": { "Fn::Sub": "arn:aws:s3:::${DataLakeS3BucketName}-${StackSuffix}/transform/*"}
                             },
                             {
                                 "Action": [
@@ -447,6 +443,16 @@
                     "StatusCode": 200
                 }]
             }
+        }
+    },
+    "Outputs": {
+        "DeliverEndpointUrl": { 
+            "Description": "URL for the deliver endpoint",
+            "Value": {"Fn::Sub": "https://${DeliverApi}.execute-api.${AWS::Region}.amazonaws.com/${DeliverApiStage}/deliver"}
+        },
+        "PredictEndpointUrl": { 
+            "Description": "URL for the predict endpoint",
+            "Value": {"Fn::Sub": "https://${DeliverApi}.execute-api.${AWS::Region}.amazonaws.com/${DeliverApiStage}/predict"}
         }
     }
 }

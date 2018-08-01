@@ -56,7 +56,7 @@
         "ParameterValue": "sagemaker-input"
     },
     {
-        "ParameterKey": "SageMakerOutputDataPrefix",
+        "ParameterKey": "SageMakerOutputModelPrefix",
         "ParameterValue": "sagemaker-output"
     },
     {

@@ -41,7 +41,7 @@
                         "SageMakerHyperParameters",
                         "SageMakerEndpointName",
                         "SageMakerInputDataPrefix",
-                        "SageMakerOutputDataPrefix",
+                        "SageMakerOutputModelPrefix",
                         "TrainingInstanceType",
                         "TrainingInstanceCount",
                         "TrainingInstanceVolumeSize",
@@ -86,7 +86,7 @@
                 "SageMakerInputDataPrefix": {
                     "default": "SageMaker Training Data Bucket"
                 },
-                "SageMakerOutputDataPrefix": {
+                "SageMakerOutputModelPrefix": {
                     "default": "SageMaker Model S3 Key Prefix"
                 },
                 "TrainingInstanceCount": {
@@ -198,7 +198,7 @@
             "Description": "S3 Key Prefix (within the SageMakerInputS3Bucket) where SageMaker training/testing data is created by the data prep lambda function .  SageMaker will point to this location to find the training and test data channels.",
             "Default": "features"
         },
-        "SageMakerOutputDataPrefix": {
+        "SageMakerOutputModelPrefix": {
             "Type": "String",
             "Description": "S3 Key Prefix (within the SageMakerModelS3Bucket) where SageMaker model is saved after training.",
             "Default": "models"
@@ -424,8 +424,7 @@
                     "InitialEndpointInstanceCount" : { "Ref" : "InitialEndpointInstanceCount" },
                     "EndpointInstanceType" : { "Ref" : "EndpointInstanceType" },
                     "SageMakerInputDataPrefix" : { "Ref" : "SageMakerInputDataPrefix" },
-                    "SageMakerOutputDataPrefix" : { "Ref" : "SageMakerOutputDataPrefix" },
-                    "DataLakeS3BucketARN" : { "Fn::GetAtt" : [ "IMETStack", "Outputs.DataLakeS3BucketARN" ] }
+                    "SageMakerOutputModelPrefix" : { "Ref" : "SageMakerOutputModelPrefix" }
                 }
             }
         },
@@ -442,10 +441,43 @@
                     "LambdaCodeS3KeyPrefix" :{ "Ref" : "QSS3KeyPrefix" },
                     "DeliverApiLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "DeliverApiLambdaCodeLocation", "path"] },
                     "PredictApiLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "PredictApiLambdaCodeLocation", "path"] },
-                    "DataLakeS3BucketName" : { "Ref" : "DataLakeS3BucketName" },
-                    "DataLakeS3BucketARN" : { "Fn::GetAtt" : [ "IMETStack", "Outputs.DataLakeS3BucketARN" ] }
+                    "DataLakeS3BucketName" : { "Ref" : "DataLakeS3BucketName" }
                 }
             }
+        }
+    },
+    "Outputs": {
+        "DataLakeBucket": {
+            "Description": "The name of the Data Lake Bucket",
+            "Value": {"Fn::GetAtt" : [ "IMETStack", "Outputs.DataLakeS3Bucket"]}
+        },
+        "SageMakerTrainingFeaturesLocation" : {
+            "Description": "The location in S3 where training features for S3 training jobs are stored",
+            "Value": { 
+                "Fn::Sub" : [ "s3://${TrainingFeaturesS3Bucket}/${SageMakerInputDataPrefix}",  
+                {
+                    "TrainingFeaturesS3Bucket": { "Fn::GetAtt" : [ "SageMakerStack", "Outputs.TrainingFeaturesS3Bucket"]},
+                    "SageMakerInputDataPrefix": { "Ref": "SageMakerInputDataPrefix" }
+                }]
+            }
+        },
+        "SageMakerModelArtifactLocation" :  {
+            "Description": "The location in S3 where the serialized models that have been trained in SageMaker are stored",
+            "Value": { 
+                "Fn::Sub": ["s3://${ModelArtifactS3Bucket}/${SageMakerOutputModelPrefix}",
+                {
+                    "ModelArtifactS3Bucket": { "Fn::GetAtt" : [ "SageMakerStack", "Outputs.ModelArtifactS3Bucket"]},
+                    "SageMakerOutputModelPrefix": { "Ref": "SageMakerOutputModelPrefix" }
+                }]
+            }
+        },
+        "DeliverEndpointUrl" :  {
+            "Description": "The URL to call for the historical data delivery endpoint",
+            "Value": { "Fn::GetAtt" : [ "DeliverStack", "Outputs.DeliverEndpointUrl"]}
+        },
+        "PredictEndpointUrl" :  {
+            "Description": "The URL to call for the prediction endpoint",
+            "Value": { "Fn::GetAtt" : [ "DeliverStack", "Outputs.PredictEndpointUrl"]}
         }
     }
 }
