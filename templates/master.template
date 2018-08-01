@@ -1,5 +1,6 @@
 {
    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Creates an end to end system to ingest and process continuously updated data to use in training an ML model.  New models are trained and exposed as prediction endpoints daily based on the latest data.",
     "Metadata": {
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [
@@ -13,7 +14,7 @@
                 },
                 {
                     "Label": {
-                        "default": "S3 Data & Artifact Repositories"
+                        "default": "S3 Data & Artifact Repositories. Use a common prefix for all 4 parameters in this section to re-use a single bucket for all the 4 repositories."
                     },
                     "Parameters": [
                         "LambdaCodeS3Bucket",
@@ -40,7 +41,7 @@
                         "SageMakerHyperParameters",
                         "SageMakerEndpointName",
                         "SageMakerInputDataPrefix",
-                        "SageMakerOutputDataPrefix",
+                        "SageMakerOutputModelPrefix",
                         "TrainingInstanceType",
                         "TrainingInstanceCount",
                         "TrainingInstanceVolumeSize",
@@ -85,7 +86,7 @@
                 "SageMakerInputDataPrefix": {
                     "default": "SageMaker Training Data Bucket"
                 },
-                "SageMakerOutputDataPrefix": {
+                "SageMakerOutputModelPrefix": {
                     "default": "SageMaker Model S3 Key Prefix"
                 },
                 "TrainingInstanceCount": {
@@ -140,13 +141,13 @@
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "Lambda Code bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String",
-            "Description": "S3 Bucket where lambda code will be copied to (within your account)"
+            "Description": "Prefix of the S3 Bucket where lambda code will be copied to (within your account).  The final bucket name will be the value of this parameter concatenated with a hyphen and resource suffix value."
         },
         "DataLakeS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "Data Lake bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String",
-            "Description": "S3 Bucket that will serve as the data lake"
+            "Description": "Prefix of the S3 Bucket that will serve as the data lake. The final bucket name will be the value of this parameter concatenated with a hyphen and resource suffix value."
         },
         "SageMakerEndpointName": {
             "Type": "String",
@@ -184,20 +185,20 @@
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "SageMaker Input bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String",
-            "Description": "S3 Bucket where SageMaker input data is created by the data prep lamba function "
+            "Description": "Prefix of the S3 Bucket where SageMaker input data is created by the data prep lamba function. The bucket name will be the value of this parameter concatenated with a hyphen and resource suffix value."
         },
         "SageMakerModelS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "SageMaker Model bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String",
-            "Description": "S3 Bucket where SageMaker models are saved after training"
+            "Description": "Prefix of the S3 Bucket where SageMaker models are saved after training. The bucket name will be the value of this parameter concatenated with a hyphen and resource suffix value"
         },
         "SageMakerInputDataPrefix": {
             "Type": "String",
             "Description": "S3 Key Prefix (within the SageMakerInputS3Bucket) where SageMaker training/testing data is created by the data prep lambda function .  SageMaker will point to this location to find the training and test data channels.",
             "Default": "features"
         },
-        "SageMakerOutputDataPrefix": {
+        "SageMakerOutputModelPrefix": {
             "Type": "String",
             "Description": "S3 Key Prefix (within the SageMakerModelS3Bucket) where SageMaker model is saved after training.",
             "Default": "models"
@@ -423,8 +424,7 @@
                     "InitialEndpointInstanceCount" : { "Ref" : "InitialEndpointInstanceCount" },
                     "EndpointInstanceType" : { "Ref" : "EndpointInstanceType" },
                     "SageMakerInputDataPrefix" : { "Ref" : "SageMakerInputDataPrefix" },
-                    "SageMakerOutputDataPrefix" : { "Ref" : "SageMakerOutputDataPrefix" },
-                    "DataLakeS3BucketARN" : { "Fn::GetAtt" : [ "IMETStack", "Outputs.DataLakeS3BucketARN" ] }
+                    "SageMakerOutputModelPrefix" : { "Ref" : "SageMakerOutputModelPrefix" }
                 }
             }
         },
@@ -441,10 +441,43 @@
                     "LambdaCodeS3KeyPrefix" :{ "Ref" : "QSS3KeyPrefix" },
                     "DeliverApiLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "DeliverApiLambdaCodeLocation", "path"] },
                     "PredictApiLambdaCodeLocation" : { "Fn::FindInMap" : ["LambdaCode", "PredictApiLambdaCodeLocation", "path"] },
-                    "DataLakeS3BucketName" : { "Ref" : "DataLakeS3BucketName" },
-                    "DataLakeS3BucketARN" : { "Fn::GetAtt" : [ "IMETStack", "Outputs.DataLakeS3BucketARN" ] }
+                    "DataLakeS3BucketName" : { "Ref" : "DataLakeS3BucketName" }
                 }
             }
+        }
+    },
+    "Outputs": {
+        "DataLakeBucket": {
+            "Description": "The name of the Data Lake Bucket",
+            "Value": {"Fn::GetAtt" : [ "IMETStack", "Outputs.DataLakeS3Bucket"]}
+        },
+        "SageMakerTrainingFeaturesLocation" : {
+            "Description": "The location in S3 where training features for S3 training jobs are stored",
+            "Value": { 
+                "Fn::Sub" : [ "s3://${TrainingFeaturesS3Bucket}/${SageMakerInputDataPrefix}",  
+                {
+                    "TrainingFeaturesS3Bucket": { "Fn::GetAtt" : [ "SageMakerStack", "Outputs.TrainingFeaturesS3Bucket"]},
+                    "SageMakerInputDataPrefix": { "Ref": "SageMakerInputDataPrefix" }
+                }]
+            }
+        },
+        "SageMakerModelArtifactLocation" :  {
+            "Description": "The location in S3 where the serialized models that have been trained in SageMaker are stored",
+            "Value": { 
+                "Fn::Sub": ["s3://${ModelArtifactS3Bucket}/${SageMakerOutputModelPrefix}",
+                {
+                    "ModelArtifactS3Bucket": { "Fn::GetAtt" : [ "SageMakerStack", "Outputs.ModelArtifactS3Bucket"]},
+                    "SageMakerOutputModelPrefix": { "Ref": "SageMakerOutputModelPrefix" }
+                }]
+            }
+        },
+        "DeliverEndpointUrl" :  {
+            "Description": "The URL to call for the historical data delivery endpoint",
+            "Value": { "Fn::GetAtt" : [ "DeliverStack", "Outputs.DeliverEndpointUrl"]}
+        },
+        "PredictEndpointUrl" :  {
+            "Description": "The URL to call for the prediction endpoint",
+            "Value": { "Fn::GetAtt" : [ "DeliverStack", "Outputs.PredictEndpointUrl"]}
         }
     }
 }

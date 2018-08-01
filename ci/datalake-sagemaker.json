@@ -1,11 +1,11 @@
 [
     {
         "ParameterKey": "StackSuffix",
-        "ParameterValue": "$[taskcat_random-string]"
+        "ParameterValue": "test"
     },
     {
         "ParameterKey": "LambdaCodeS3Bucket",
-        "ParameterValue": "$[taskcat_genuuid]"
+        "ParameterValue": "datalake-sagemaker-demo-lambda-code"
     },
     {
         "ParameterKey": "SageMakerEndpointName",
@@ -13,7 +13,7 @@
     },
     {
         "ParameterKey": "DataLakeS3BucketName",
-        "ParameterValue": "$[taskcat_genuuid]"
+        "ParameterValue": "imet-datalake-sagemaker-demo"
     },
     {
         "ParameterKey": "QSS3BucketName",
@@ -25,11 +25,11 @@
     },
     {
         "ParameterKey": "SageMakerInputS3BucketName",
-        "ParameterValue": "$[taskcat_genuuid]"
+        "ParameterValue": "features-datalake-sagemaker-demo"
     },
     {
         "ParameterKey": "SageMakerModelS3BucketName",
-        "ParameterValue": "$[taskcat_genuuid]"
+        "ParameterValue": "models-datalake-sagemaker-demo"
     },
     {
         "ParameterKey": "SageMakerHyperParameters",
@@ -64,7 +64,7 @@
         "ParameterValue": "sagemaker-input"
     },
     {
-        "ParameterKey": "SageMakerOutputDataPrefix",
+        "ParameterKey": "SageMakerOutputModelPrefix",
         "ParameterValue": "sagemaker-output"
     }
 ]

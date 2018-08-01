@@ -1,5 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Creates the resources needed to train and get predictions from SageMaker Models.  Lambda functions are used to create training jobs and prediction endpoints based on changes in S3 data.",
     "Parameters": {
         "StackSuffix": {
             "Type": "String",
@@ -80,13 +81,9 @@
             "Type": "String",
             "Description": "S3 Prefix where SageMaker training/testing data lives"
         },
-        "SageMakerOutputDataPrefix": {
+        "SageMakerOutputModelPrefix": {
             "Type": "String",
             "Description": "S3 Prefix where SageMaker model lives"
-        },
-        "DataLakeS3BucketARN": {
-            "Type": "String",
-            "Description": "S3 Bucket where data lake lives"
         }
     },
     "Mappings": {
@@ -347,7 +344,7 @@
                                     {
                                         "Name": "prefix",
                                         "Value": {
-                                            "Ref": "SageMakerOutputDataPrefix"
+                                            "Ref": "SageMakerOutputModelPrefix"
                                         }
                                     }
                                 ]
@@ -392,7 +389,7 @@
                                     "s3:GetObject"
                                 ],
                                 "Resource": {
-                                    "Fn::Sub": "${DataLakeS3BucketARN}/transform/*"
+                                     "Fn::Sub": "arn:aws:s3:::${DataLakeS3BucketName}-${StackSuffix}/transform/*" 
                                 }
                             },
                             {
@@ -401,7 +398,7 @@
                                     "s3:ListBucket"
                                 ],
                                 "Resource": {
-                                    "Ref": "DataLakeS3BucketARN"
+                                     "Fn::Sub": "arn:aws:s3:::${DataLakeS3BucketName}-${StackSuffix}" 
                                 }
                             },
                             {
@@ -428,7 +425,7 @@
                                         ]
                                     },
                                     {
-                                        "Fn::Sub": "${DataLakeS3BucketARN}/transform/*"
+                                        "Fn::Sub": "arn:aws:s3:::${DataLakeS3BucketName}-${StackSuffix}/transform/*"
                                     }
                                 ]
                             }
@@ -716,7 +713,7 @@
                                     "s3:Put*"
                                 ],
                                 "Resource": {
-                                    "Fn::Sub": "arn:aws:s3:::${SageMakerModelS3BucketName}-${StackSuffix}/${SageMakerOutputDataPrefix}/*"
+                                    "Fn::Sub": "arn:aws:s3:::${SageMakerModelS3BucketName}-${StackSuffix}/${SageMakerOutputModelPrefix}/*"
                                 }
                             }
                         ]
@@ -813,7 +810,7 @@
                                     "s3:GetObject"
                                 ],
                                 "Resource": {
-                                    "Fn::Sub": "arn:aws:s3:::${SageMakerModelS3BucketName}-${StackSuffix}/${SageMakerOutputDataPrefix}/*"
+                                    "Fn::Sub": "arn:aws:s3:::${SageMakerModelS3BucketName}-${StackSuffix}/${SageMakerOutputModelPrefix}/*"
                                 }
                             }
                         ]
@@ -951,8 +948,8 @@
                         "OutputBucketName": {
                             "Fn::Sub": "${SageMakerModelS3BucketName}-${StackSuffix}"
                         },
-                        "SageMakerOutputDataPrefix": {
-                            "Ref": "SageMakerOutputDataPrefix"
+                        "SageMakerOutputModelPrefix": {
+                            "Ref": "SageMakerOutputModelPrefix"
                         },
                         "HyperParameters": {
                             "Ref": "HyperParameters"
@@ -1025,6 +1022,16 @@
                     }
                 }
             }
+        }
+    },
+    "Outputs" : {
+        "TrainingFeaturesS3Bucket" : {
+            "Description": "ML Model Training Features S3 Bucket Full Name",  
+            "Value" : { "Ref": "SageMakerInputS3Bucket" }
+        },
+        "ModelArtifactS3Bucket" : {
+            "Description": "Serialized Model Artifact S3 Bucket Full Name",  
+            "Value" : { "Ref": "SageMakerModelS3Bucket" }
         }
     }
 }
