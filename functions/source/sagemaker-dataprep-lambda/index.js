@@ -76,7 +76,7 @@ function translateData(inputS3Objects){
 	var trainingDataKey = `${sageMakerInputDataPrefix}/${dateString}/train/train.json`;
 	var testDataKey = `${sageMakerInputDataPrefix}/${dateString}/test/test.json`;
 	console.log(`Writing ${trainingRows.length} training data rows to ${trainingDataKey}`);
-	console.log(`Writing ${testRows.length} test data to ${testDataKey}`);
+	console.log(`Writing ${testRows.length} test data rows to ${testDataKey}`);
 	
 	var trainingData = sageMakerRowsToS3Object(trainingRows, trainingDataKey);
 	var testData = sageMakerRowsToS3Object(testRows, testDataKey);
@@ -146,7 +146,7 @@ function cleanAndSplitRow(sageMakerRow, contextLength, predictionLength, minCat,
 			sageMakerRow.target = replicate(sageMakerRow.target, requiredLength/sageMakerRow.target.length)
 		}
 		var splitIndex = sageMakerRow.target.length - 1 - contextLength;
-		var startTime = sageMakerRow.start;
+		var startTime = sageMakerRow.start.replace("Z", "");
 		var targetItems = cleanRow(sageMakerRow.target);
 		var trainingTarget = targetItems.slice(0, splitIndex);
 		var testTarget = targetItems.slice(splitIndex);
