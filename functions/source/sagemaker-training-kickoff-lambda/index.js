@@ -55,42 +55,35 @@ function getNumCats(awsRegion, s3Bucket, s3Key, callback){
 
 function getParams(awsRegion, record, callback){
 	var s3Bucket = record.s3.bucket.name;
-	var trainingKey = record.s3.object.key;
-	var testKey = trainingKey.replace("train/train.json", "test/test.json");
-	getNumCats(awsRegion, s3Bucket, testKey, function(err, numCats){
-		if(err){
-			callback(err);
-		}
-		else{
-			var hyperParameters = JSON.parse(process.env.HyperParameters);
-			var dateString = new Date().toISOString().replace(":", "-").replace(":", "-").slice(0, -5);
-			var instanceCount = parseInt(process.env.TrainingInstanceCount);
-			var instanceType = process.env.TrainingInstanceType;
-			var instanceVolumeSize = parseInt(process.env.TrainingInstanceVolumeSize);
-			var inputDataConfig = getInputDataConfig(s3Bucket, trainingKey, testKey);
-			var outputBucket = process.env.OutputBucketName;
-			var outputPrefix = process.env.SageMakerOutputModelPrefix;
-			var outputDataConfig = getOutputDataConfig(outputBucket, outputPrefix, dateString);
-			var resourceConfig = getResourceConfig(instanceCount, instanceType, instanceVolumeSize);
-			var trainingJobName = getTrainingJobName(dateString);
-			var roleArn = process.env.TrainingRoleArn;
-			var trainingImage = process.env.TrainingImage;
-			var algorithmSpecification = getAlgorithmSpecification(trainingImage);
-			var maxRuntimeSeconds = process.env.TrainingMaxRuntimeSeconds;
-			var stoppingCondition = getStoppingCondition(maxRuntimeSeconds);
-			var params = {
-		  		AlgorithmSpecification: algorithmSpecification,
-				InputDataConfig: inputDataConfig,
-				OutputDataConfig: outputDataConfig,
-				ResourceConfig: resourceConfig,
-				RoleArn: roleArn,
-				StoppingCondition: stoppingCondition,
-				TrainingJobName: trainingJobName,
-				HyperParameters: hyperParameters
-			};
-			callback(null,  params);
-		}
-	});
+	var trainingKey = record.s3.object.key.replace("train.json", "");
+	var testKey = trainingKey.replace("train/", "test/");
+	var hyperParameters = JSON.parse(process.env.HyperParameters);
+	var dateString = new Date().toISOString().replace(":", "-").replace(":", "-").slice(0, -5);
+	var instanceCount = parseInt(process.env.TrainingInstanceCount);
+	var instanceType = process.env.TrainingInstanceType;
+	var instanceVolumeSize = parseInt(process.env.TrainingInstanceVolumeSize);
+	var inputDataConfig = getInputDataConfig(s3Bucket, trainingKey, testKey);
+	var outputBucket = process.env.OutputBucketName;
+	var outputPrefix = process.env.SageMakerOutputModelPrefix;
+	var outputDataConfig = getOutputDataConfig(outputBucket, outputPrefix, dateString);
+	var resourceConfig = getResourceConfig(instanceCount, instanceType, instanceVolumeSize);
+	var trainingJobName = getTrainingJobName(dateString);
+	var roleArn = process.env.TrainingRoleArn;
+	var trainingImage = process.env.TrainingImage;
+	var algorithmSpecification = getAlgorithmSpecification(trainingImage);
+	var maxRuntimeSeconds = process.env.TrainingMaxRuntimeSeconds;
+	var stoppingCondition = getStoppingCondition(maxRuntimeSeconds);
+	var params = {
+  		AlgorithmSpecification: algorithmSpecification,
+		InputDataConfig: inputDataConfig,
+		OutputDataConfig: outputDataConfig,
+		ResourceConfig: resourceConfig,
+		RoleArn: roleArn,
+		StoppingCondition: stoppingCondition,
+		TrainingJobName: trainingJobName,
+		HyperParameters: hyperParameters
+	};
+	callback(null,  params);
 }
 
 
