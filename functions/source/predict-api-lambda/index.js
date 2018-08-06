@@ -78,6 +78,7 @@ function executeSageMakerDeepAR(endpointName, historicals, startDate, endDate, c
     var now = new Date();
     var hoursOut = Math.ceil((endDate - now) / oneHour);
     var hourSpan = Math.ceil((endDate.getTime() - startDate.getTime()) / oneHour);
+    historicals.start = historicals.start.replace("Z", "")
     var deepARBody = { 
         "instances": [historicals],
         "configuration": {
