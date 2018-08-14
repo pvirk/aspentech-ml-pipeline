@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Creates the data processing pipeline to continuously ingest, model, enhance, and transform the raw data for training models.",
+    "Description": "Creates the data processing pipeline to continuously ingest, model, enhance, and transform the raw data for training models. (qs-1onlac5tb)",
     "Parameters": {
         "StackSuffix": {
             "Type": "String",

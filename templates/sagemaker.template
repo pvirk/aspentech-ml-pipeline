@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Creates the resources needed to train and get predictions from SageMaker Models.  Lambda functions are used to create training jobs and prediction endpoints based on changes in S3 data.",
+    "Description": "Creates the resources needed to train and get predictions from SageMaker Models.  Lambda functions are used to create training jobs and prediction endpoints based on changes in S3 data. (qs-1onlac5tg)",
     "Parameters": {
         "StackSuffix": {
             "Type": "String",

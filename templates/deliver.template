@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Creates RESTful APIs to get historical and predicted values from the data stream.",
+    "Description": "Creates RESTful APIs to get historical and predicted values from the data stream. (qs-1onlac5tl)",
     "Parameters": {
         "StackSuffix": {
             "Type": "String",
