@@ -1,38 +1,18 @@
 # quickstart-datalake-pariveda
+## Predictive Data Science with Amazon SageMaker and a Data Lake on AWS
 
-This GitHub repository contains a quickstart template for creating a datalake in AWS integrated with Sagemaker to derive insights using machine learning.
+This Quick Start sets up an architecture for predictive data science with Amazon SageMaker and a data lake on Amazon Web Services (AWS). The deployment, which takes about 10-15 minutes, uses AWS services such as Amazon Simple Storage Service (Amazon S3), Amazon API Gateway, Amazon Kinesis Data Streams, and Amazon Kinesis Data Firehose.
 
-## Development Command Line Tools
+Amazon SageMaker is a managed platform that enables developers and data scientists to build, train, and deploy machine learning (ML) models.
 
-Note: All command line tools should be run in root directory of project
+This Quick Start is for those who want to use data to make predictive and prescriptive models, without needing to configure complex ML hardware clusters.
 
-- Create/Update Stack: `tools/create-update-stacks.sh [stack-suffix]`
+The Quick Start provides a demo created by Pariveda Solutions. The demo shows how to store raw data on Amazon S3, transform the data for consumption in Amazon SageMaker, use Amazon SageMaker to build an ML model, and host the model in a prediction API for Amazon Elastic Compute Cloud (Amazon EC2) Spot pricing.
 
-- Upload Lambda Code to S3: `tools/upload-lambda-code.sh [lambda-name]`
+The AWS CloudFormation templates included with the Quick Start automate the deployment.
 
-- Update Lambda Code: `tools/update-lambda-code.sh [function-name] [lambda-name]`
+![Predictive Data Science with Amazon SageMaker and a Data Lake on AWS](https://d1.awsstatic.com/partner-network/QuickStart/datasheets/pariveda-data-lake-sagemaker-on-aws-architecture.50175e74b2b654a12ab2cbe933f47a3a018f0d12.png)
 
-- Send Data to Kinesis: `tools/send-kinesis-data.sh [stream-name]`
+For architectural details, best practices, step-by-step instructions, and customization options, see the [deployment guide](https://fwd.aws/yW6RP).
 
-
-## CI Using taskcat ##
-
-To test multi-region deployment using the [AWS TaskCat tool](https://github.com/aws-quickstart/taskcat), first prepare the code for publishing
-
-`./tools/publish-all-lambda-code.sh`
-
-Then run taskcat from the parent directory.  
-
-`cd ..`
-
-`taskcat -c quickstart-datalake-pariveda/ci/config.yml`
-
-This will test the script in all regions that support SageMaker: 
-- us-east-1
-- us-east-2
-- us-west-2
-- ap-northeast-1
-- ap-northeast-2
-- ap-southeast-2
-- eu-central-1
-- eu-west-1
+To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo. If you'd like to submit code for this Quick Start, please review the  [AWS Quick Start Contributor's Kit](https://aws-quickstart.github.io/).
