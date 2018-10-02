@@ -80,6 +80,7 @@ function getModelCreationParams(s3Url, dateString){
 	return params;
 }
 
+
 function getModelName(dateString){
 	var modelNamePrefix = "ec2-spot-data-model-";
 	return modelNamePrefix + dateString;
@@ -96,17 +97,30 @@ function getEndpointName(){
 
 function createModel(awsRegion, s3Url, dateString, callback){
 	var modelCreationParams = getModelCreationParams(s3Url, dateString);
+	var name= {ModelName:getModelName(dateString)};
 	var sagemaker = new AWS.SageMaker({region: awsRegion});
-	sagemaker.createModel(modelCreationParams, function(err, response){
+	sagemaker.describeModel(name,function(err,response){
+		
 		if(err){
-			console.log(`Failed to create model: ${JSON.stringify(err)}`);
-			callback(err);
+			console.log(`model doesnt exist creating: ${JSON.stringify(err)}`);
+			sagemaker.createModel(modelCreationParams, function(err, response){
+			if(err){
+				console.log(`Failed to create model: ${JSON.stringify(err)}`);
+				callback(err);
+			}
+			else{
+				console.log(`Successfully created model: ${JSON.stringify(response)}`);
+				callback(null);
+			}
+		});
+			
 		}
 		else{
-			console.log(`Successfully created model: ${JSON.stringify(response)}`);
+			console.log(`Model already exists: ${JSON.stringify(response)}`);
 			callback(null);
 		}
 	});
+	
 }
 
 function getEndpointConfigurationParams(dateString){
@@ -130,17 +144,28 @@ function getEndpointConfigurationParams(dateString){
 
 function createEndpointConfiguration(awsRegion, dateString, callback){
 	var endpointConfigurationParams = getEndpointConfigurationParams(dateString);
+	var name= {EndpointConfigName:getEndpointConfigurationName(dateString)};
 	var sagemaker = new AWS.SageMaker({region: awsRegion});
-	sagemaker.createEndpointConfig(endpointConfigurationParams, function(err, response){
+	sagemaker.describeEndpointConfig(name,function(err,response){
 		if(err){
-			console.log(`Failed to create endpoint configuration: ${JSON.stringify(err)}`);
-			callback(err);
+			console.log(`endpointConfig doesnt exist creating: ${JSON.stringify(err)}`);
+			sagemaker.createEndpointConfig(endpointConfigurationParams, function(err, response){
+			if(err){
+				console.log(`Failed to create endpoint configuration: ${JSON.stringify(err)}`);
+				callback(err);
+			}
+			else{
+				console.log(`Successfully created endpoint configuration: ${JSON.stringify(response)}`);
+				callback(null);
+			}
+		});
 		}
 		else{
-			console.log(`Successfully created endpoint configuration: ${JSON.stringify(response)}`);
+			console.log(`Endpoint config already exists: ${JSON.stringify(response)}`);
 			callback(null);
 		}
 	});
+
 }
 
 function getDescribeEndpointParams(){
