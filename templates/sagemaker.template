@@ -901,7 +901,7 @@
                         "Fn::Sub": "${LambdaCodeS3KeyPrefix}${SageMakerDataPrepLambdaCodeLocation}"
                     }
                 },
-                "Runtime": "nodejs4.3",
+                "Runtime": "nodejs8.10",
                 "Timeout": 300,
                 "MemorySize": 1024,
                 "Environment": {
@@ -941,7 +941,7 @@
                         "Fn::Sub": "${LambdaCodeS3KeyPrefix}${SageMakerTrainingKickoffLambdaCodeLocation}"
                     }
                 },
-                "Runtime": "nodejs4.3",
+                "Runtime": "nodejs8.10",
                 "Timeout": 300,
                 "Environment": {
                     "Variables": {
@@ -997,7 +997,7 @@
                         "Fn::Sub": "${LambdaCodeS3KeyPrefix}${SageMakerEndpointUpdateLambdaCodeLocation}"
                     }
                 },
-                "Runtime": "nodejs4.3",
+                "Runtime": "nodejs8.10",
                 "Timeout": 300,
                 "Environment": {
                     "Variables": {
