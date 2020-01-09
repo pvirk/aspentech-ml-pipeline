@@ -119,7 +119,7 @@
                         "AutoGenOutputBucketName",
                         {
                             "Fn::Sub": "${LambdaCodeS3Bucket}-${StackSuffix}"
-                        }, 
+                        },
                         {
                             "Ref": "AWS::NoValue"
                         }
@@ -227,7 +227,7 @@
             "Properties": {
                 "Description": "Copies objects from a source S3 bucket to a destination",
                 "Handler": "index.handler",
-                "Runtime": "python2.7",
+                "Runtime": "python3.7",
                 "Role": {
                     "Fn::GetAtt": [
                         "CopyZipsRole",
