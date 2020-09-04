@@ -569,7 +569,7 @@
                                     "sagemaker:DescribeEndpoint"
                                 ],
                                 "Resource": {
-                                    "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/*endpoint-*"
+                                    "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/*"
                                 }
                             },
                             {

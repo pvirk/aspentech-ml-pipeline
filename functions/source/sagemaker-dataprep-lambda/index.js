@@ -128,7 +128,7 @@ function cleanRow(targetItems){
 
 function replicate(arr, times) {
      var al = arr.length,
-         rl = al*times,
+         rl = al*Math.ceil(times),
          res = new Array(rl);
      for (var i=0; i<rl; i++)
          res[i] = arr[i % al];

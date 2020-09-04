@@ -31,11 +31,11 @@ exports.handler = (event, context, callback) => {
 		queryPriceHistory(startTime, endTime, function(err){
 			if(err) {
 				console.log("Failed to process CloudFormation event" + err);
-				response.send(event, context, response.FAILED);
+				// response.send(event, context, response.FAILED);
 			}
 			else {
 				console.log("Successfully processed CloudFormation event");
-				response.send(event, context, response.SUCCESS);
+				// response.send(event, context, response.SUCCESS);
 			}
 		});
 	} else {
