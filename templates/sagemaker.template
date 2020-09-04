@@ -548,7 +548,8 @@
                             {
                                 "Effect": "Allow",
                                 "Action": [
-                                    "sagemaker:CreateModel"
+                                    "sagemaker:CreateModel",
+                                    "sagemaker:DescribeModel"
                                 ],
                                 "Resource": {
                                     "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:model/*model-*"
@@ -560,13 +561,14 @@
                                     "sagemaker:CreateEndpointConfig"
                                 ],
                                 "Resource": {
-                                    "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint-config/*endpoint-config-*"
+                                    "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint-config/*"
                                 }
                             },
                             {
                                 "Effect": "Allow",
                                 "Action": [
-                                    "sagemaker:DescribeEndpoint"
+                                    "sagemaker:DescribeEndpoint",
+                                    "sagemaker:CreateEndpoint"
                                 ],
                                 "Resource": {
                                     "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/*"
@@ -580,7 +582,7 @@
                                 ],
                                 "Resource": [
                                     {
-                                        "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/*endpoint-*"
+                                        "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/*"
                                     },
                                     {
                                         "Fn::Sub": "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint-config/*config-*"
