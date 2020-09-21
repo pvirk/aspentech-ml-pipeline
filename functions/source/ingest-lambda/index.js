@@ -25,9 +25,9 @@ exports.handler = (event, context, callback) => {
 			}
 		});
 	} else if (event.StackId) {
-		console.log('Triggered by CloudFormation.  Backfilling 30 days of data.');
+		console.log('Triggered by CloudFormation.  Backfilling 120 days of data.');
 		var endTime = new Date();
-		var startTime = new Date(endTime.getTime()-3600*24*1000*30);
+		var startTime = new Date(endTime.getTime()-3600*24*1000*120);
 		queryPriceHistory(startTime, endTime, function(err){
 			if(err) {
 				console.log("Failed to process CloudFormation event" + err);

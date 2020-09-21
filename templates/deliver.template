@@ -190,6 +190,7 @@
                 "FunctionName": {
                     "Fn::Sub": "DeliverApiLambda-${StackSuffix}"
                 },
+                "Description": "8. Answers the API calls for historic Access to Data",
                 "Handler": "index.handler",
                 "Role": {
                     "Fn::GetAtt": ["DeliverApiLambdaRole", "Arn"]
@@ -218,6 +219,7 @@
                 "FunctionName": {
                     "Fn::Sub": "PredictApiLambda-${StackSuffix}"
                 },
+                "Description": "9. API calls to Predict Data (inference)",
                 "Handler": "index.handler",
                 "Role": {
                     "Fn::GetAtt": ["PredictApiLambdaRole", "Arn"]

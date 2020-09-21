@@ -472,6 +472,7 @@
                 "FunctionName": {
                     "Fn::Sub": "IngestLambda-${StackSuffix}"
                 },
+                "Description": "1. Ingest Lambda",
                 "Handler": "index.handler",
                 "Role": {
                     "Fn::GetAtt": ["IngestLambdaRole", "Arn"]
@@ -500,6 +501,7 @@
                 "FunctionName": {
                     "Fn::Sub": "ModelLambda-${StackSuffix}"
                 },
+                "Description": "2. Data Modelling of Ingested Data",
                 "Handler": "index.handler",
                 "Role": {
                     "Fn::GetAtt": ["ModelLambdaRole", "Arn"]
@@ -531,6 +533,7 @@
                 "FunctionName": {
                     "Fn::Sub": "EnhanceLambda-${StackSuffix}"
                 },
+                "Description": "3. Enhance Data",
                 "Handler": "index.handler",
                 "Role": {
                     "Fn::GetAtt": ["EnhanceLambdaRole", "Arn"]
@@ -562,6 +565,7 @@
                 "FunctionName": {
                     "Fn::Sub": "TransformLambda-${StackSuffix}"
                 },
+                "Description": "4. Transform Data",
                 "Handler": "index.handler",
                 "Role": {
                     "Fn::GetAtt": ["TransformLambdaRole", "Arn"]

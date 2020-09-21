@@ -891,6 +891,7 @@
                 "FunctionName": {
                     "Fn::Sub": "SageMakerDataPrepLambda-${StackSuffix}"
                 },
+                "Description": "5. Feature Engineering",
                 "Handler": "index.handler",
                 "Role": {
                     "Fn::GetAtt": ["SageMakerDataPrepLambdaRole", "Arn"]
@@ -931,6 +932,7 @@
                 "FunctionName": {
                     "Fn::Sub": "SageMakerTrainingKickoffLambda-${StackSuffix}"
                 },
+                "Description": "6. Sagemaker Training - Kicks off Sagemaker training job using DeepAR algorithm",
                 "Handler": "index.handler",
                 "Role": {
                     "Fn::GetAtt": ["SageMakerTrainingKickoffLambdaRole", "Arn"]
@@ -987,6 +989,7 @@
                 "FunctionName": {
                     "Fn::Sub": "SageMakerEndpointUpdateLambda-${StackSuffix}"
                 },
+                "Description": "7. Sagemaker Endpoint for the Trained Model",
                 "Handler": "index.handler",
                 "Role": {
                     "Fn::GetAtt": ["SageMakerEndpointUpdateLambdaRole", "Arn"]
